@@ -1,0 +1,81 @@
+group 'com.finvu.finvu_flutter_sdk'
+version '1.0-SNAPSHOT'
+
+buildscript {
+    ext.kotlin_version = '1.7.10'
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.3.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+
+        flatDir {
+            dirs "../../../finvu_android_sdk/core/build/outputs/aar/", "../../../finvu_android_sdk/client/build/outputs/aar/"
+        }
+    }
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+    if (project.android.hasProperty("namespace")) {
+        namespace 'com.finvu.finvu_flutter_sdk'
+    }
+
+    compileSdkVersion 33
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+        test.java.srcDirs += 'src/test/kotlin'
+    }
+
+    defaultConfig {
+        minSdkVersion 24
+    }
+
+    dependencies {
+        testImplementation 'org.jetbrains.kotlin:kotlin-test'
+        testImplementation 'org.mockito:mockito-core:5.0.0'
+
+        debugImplementation(name: "core-debug", ext: "aar")
+        debugImplementation(name: "client-debug", ext: "aar")
+        debugImplementation("com.squareup.okhttp3:okhttp-urlconnection:4.9.1")
+
+        // TODO: Add release implementation dependency via public distribution
+        releaseImplementation(name: "core-release", ext: "aar")
+        releaseImplementation(name: "client-release", ext: "aar")
+        releaseImplementation("com.squareup.okhttp3:okhttp-urlconnection:4.9.1")
+    }
+
+    testOptions {
+        unitTests.all {
+            useJUnitPlatform()
+
+            testLogging {
+               events "passed", "skipped", "failed", "standardOut", "standardError"
+               outputs.upToDateWhen {false}
+               showStandardStreams = true
+            }
+        }
+    }
+}
