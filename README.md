@@ -14,7 +14,7 @@ Welcome to the integration guide for Finvu Flutter SDK! This document provides d
     1. Min iOS version supported is iOS 13
 
 ## Installation
-1. Add "finvu_flutter_sdk" and "finvu_flutter_sdk_core" dependencies in your pubspec.yaml
+1. Add `finvu_flutter_sdk` and `finvu_flutter_sdk_core` dependencies in your `pubspec.yaml`
 ```
 dependencies:
   flutter:
@@ -30,7 +30,7 @@ dependencies:
       path: core
       ref: 1.0.0
 ```
-2. On android add the following repository to your project level build.gradle file. Note that you need to provide some github credentials.
+2. On android add the following repository to your project level `build.gradle` file. Note that you need to provide some github credentials.
 ```
 allprojects {
     repositories {
@@ -48,7 +48,7 @@ allprojects {
     }
 }
 ```
-3. On iOS add the following to your Podfile
+3. On iOS add the following to your `Podfile`
 ```
 target 'Runner' do
   use_frameworks!
