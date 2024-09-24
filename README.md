@@ -30,12 +30,12 @@ dependencies:
     sdk: flutter
   finvu_flutter_sdk:
     git:
-      url: https://github.com/Cookiejar-technologies/finvu_ios_sdk.git
+      url: https://github.com/Cookiejar-technologies/finvu_flutter_sdk.git
       path: client
       ref: 1.0.0
   finvu_flutter_sdk_core:
     git:
-      url: https://github.com/Cookiejar-technologies/finvu_ios_sdk.git
+      url: https://github.com/Cookiejar-technologies/finvu_flutter_sdk.git
       path: core
       ref: 1.0.0
 ```
@@ -57,16 +57,38 @@ allprojects {
     }
 }
 ```
-3. On iOS add the following to your `Podfile`
+3. On android add the below in app level build.gradle file
+```
+    defaultConfig {
+        minSdkVersion 24
+    }
+
+```
+
+4. On iOS add the following to your `Podfile`
 ```
 target 'Runner' do
   use_frameworks!
   use_modular_headers!
 
-  ## Add this line
+  ## Add these lines
+  platform :ios, '16.0'
   pod 'FinvuSDK' , :git => 'https://github.com/Cookiejar-technologies/finvu_ios_sdk.git'
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+end
+
+
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    flutter_additional_ios_build_settings(target)
+    
+    // Add these lines
+    target.build_configurations.each do |config|
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.0'
+    end
+
+  end
 end
 
 ```
