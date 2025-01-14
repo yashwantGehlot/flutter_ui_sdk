@@ -26,6 +26,11 @@ import NativeLoginOtpReference
 import NativeProcessConsentRequestResponse
 import NativeTypeIdentifierInfo
 import NativeAccountAggregator
+import NativeEntityInfo
+import NativeFIPFiTypeIdentifier
+import NativeFIPInfo
+import NativeFIPSearchResponse
+import NativeTypeIdentifier
 import NativeUserConsentInfoDetails
 import NativeFIPReference
 import com.finvu.android.utils.FinvuConfig
@@ -50,6 +55,7 @@ import com.finvu.android.publicInterface.UserConsentInfoDetails
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodChannel
 import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
@@ -65,7 +71,7 @@ class FinvuFlutterSdkPlugin: FlutterPlugin, NativeFinvuManager {
   /// when the Flutter Engine is detached from the Activity
   private lateinit var channel : MethodChannel
 
-  private val dateFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+  private val dateFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.getDefault())
 
   init {
     dateFormatter.timeZone = TimeZone.getDefault()
@@ -304,6 +310,79 @@ class FinvuFlutterSdkPlugin: FlutterPlugin, NativeFinvuManager {
     }
   }
 
+  override fun fipsAllFIPOptions(callback: (Result<NativeFIPSearchResponse>) -> Unit) {
+    FinvuManager.shared.fipsAllFIPOptions { result ->
+      if (result.isFailure) {
+        val error = result.exceptionOrNull() as FinvuException
+        callback(Result.failure(NativeFinvuError(code = error.code.toString(), message = error.message)))
+        return@fipsAllFIPOptions
+      }
+
+      val response = result.getOrThrow()
+      val searchOptions = response.searchOptions.map {
+        NativeFIPInfo(
+          fipId = it.fipId,
+          fipFitypes = it.fipFiTypes,
+          fipFsr = it.fipFsr,
+          productName = it.productName,
+          productDesc = it.productDesc,
+          productIconUri = it.productIconUri,
+          enabled = it.enabled
+        )
+      }
+
+      callback(Result.success(NativeFIPSearchResponse(searchOptions)))
+    }
+  }
+
+  override fun fetchFIPDetails(fipId: String, callback: (Result<NativeFIPDetails>) -> Unit) {
+    FinvuManager.shared.fetchFipDetails(fipId) { result ->
+      if (result.isFailure) {
+        val error = result.exceptionOrNull() as FinvuException
+        callback(Result.failure(NativeFinvuError(code = error.code.toString(), message = error.message)))
+        return@fetchFipDetails
+      }
+
+      val response = result.getOrThrow()
+      val typeIdentifiers = response.typeIdentifiers.map { fipFiTypeIdentifier ->
+        val identifiers = fipFiTypeIdentifier.identifiers.map {
+          NativeTypeIdentifier(type = it.type, category = it.category)
+        }
+        NativeFIPFiTypeIdentifier(
+          fipFiTypeIdentifier.fiType,
+          identifiers
+        )
+      }
+      val fipDetails = NativeFIPDetails(response.fipId, typeIdentifiers)
+      callback(Result.success(fipDetails))
+    }
+  }
+
+  override fun getEntityInfo(
+    entityId: String,
+    entityType: String,
+    callback: (Result<NativeEntityInfo>) -> Unit
+  ) {
+    FinvuManager.shared.getEntityInfo(entityId, entityType) { result ->
+      if (result.isFailure) {
+        val error = result.exceptionOrNull() as FinvuException
+        callback(Result.failure(NativeFinvuError(code = error.code.toString(), message = error.message)))
+        return@getEntityInfo
+      }
+
+      val response = result.getOrThrow()
+      val entityInfo = NativeEntityInfo(
+        entityId = response.entityId,
+        entityName = response.entityName,
+        entityIconUri = response.entityIconUri,
+        entityLogoUri = response.entityLogoUri,
+        entityLogoWithNameUri = response.entityLogoWithNameUri
+      )
+
+      callback(Result.success(entityInfo))
+    }
+  }
+
   override fun approveConsentRequest(
     consentRequest: NativeConsentRequestDetailInfo,
     linkedAccounts: List<NativeLinkedAccountDetailsInfo>,
@@ -315,6 +394,7 @@ class FinvuFlutterSdkPlugin: FlutterPlugin, NativeFinvuManager {
         id = consentRequest.financialInformationUser.id,
         name = consentRequest.financialInformationUser.name
       ),
+      statusLastUpdateTimestamp = null,
       consentPurpose = ConsentPurpose(
         code = consentRequest.consentPurposeInfo.code,
         text = consentRequest.consentPurposeInfo.text
@@ -383,6 +463,7 @@ class FinvuFlutterSdkPlugin: FlutterPlugin, NativeFinvuManager {
         id = consentRequest.financialInformationUser.id,
         name = consentRequest.financialInformationUser.name
       ),
+      statusLastUpdateTimestamp = null,
       consentPurpose = ConsentPurpose(
         code = consentRequest.consentPurposeInfo.code,
         text = consentRequest.consentPurposeInfo.text
@@ -482,6 +563,9 @@ class FinvuFlutterSdkPlugin: FlutterPlugin, NativeFinvuManager {
       val consentRequestDetail = NativeConsentRequestDetailInfo(
         consentId = response.consentDetail.consentId,
         consentHandleId = response.consentDetail.consentHandle,
+        statusLastUpdateTimestamp = response.consentDetail.statusLastUpdateTimestamp?.let {
+          dateFormatter.format(it)
+        } ?: "",
         financialInformationUser = NativeFinancialInformationEntity(
           id = response.consentDetail.financialInformationUser.id,
           name = response.consentDetail.financialInformationUser.name,

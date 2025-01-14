@@ -462,6 +462,7 @@ class NativeConsentRequestDetailInfo {
     required this.consentDataFrequency,
     required this.consentDataLifePeriod,
     this.fiTypes,
+    this.statusLastUpdateTimestamp,
   });
 
   String consentHandleId;
@@ -484,6 +485,8 @@ class NativeConsentRequestDetailInfo {
 
   List<String?>? fiTypes;
 
+  String? statusLastUpdateTimestamp;
+
   Object encode() {
     return <Object?>[
       consentHandleId,
@@ -496,6 +499,7 @@ class NativeConsentRequestDetailInfo {
       consentDataFrequency.encode(),
       consentDataLifePeriod.encode(),
       fiTypes,
+      statusLastUpdateTimestamp,
     ];
   }
 
@@ -512,6 +516,7 @@ class NativeConsentRequestDetailInfo {
       consentDataFrequency: NativeConsentDataFrequency.decode(result[7]! as List<Object?>),
       consentDataLifePeriod: NativeConsentDataLifePeriod.decode(result[8]! as List<Object?>),
       fiTypes: (result[9] as List<Object?>?)?.cast<String?>(),
+      statusLastUpdateTimestamp: result[10] as String?,
     );
   }
 }
@@ -786,6 +791,119 @@ class NativeConsentHandleStatusResponse {
   }
 }
 
+class NativeFIPInfo {
+  NativeFIPInfo({
+    required this.fipId,
+    this.productName,
+    required this.fipFitypes,
+    this.fipFsr,
+    this.productDesc,
+    this.productIconUri,
+    required this.enabled,
+  });
+
+  String fipId;
+
+  String? productName;
+
+  List<String?> fipFitypes;
+
+  String? fipFsr;
+
+  String? productDesc;
+
+  String? productIconUri;
+
+  bool enabled;
+
+  Object encode() {
+    return <Object?>[
+      fipId,
+      productName,
+      fipFitypes,
+      fipFsr,
+      productDesc,
+      productIconUri,
+      enabled,
+    ];
+  }
+
+  static NativeFIPInfo decode(Object result) {
+    result as List<Object?>;
+    return NativeFIPInfo(
+      fipId: result[0]! as String,
+      productName: result[1] as String?,
+      fipFitypes: (result[2] as List<Object?>?)!.cast<String?>(),
+      fipFsr: result[3] as String?,
+      productDesc: result[4] as String?,
+      productIconUri: result[5] as String?,
+      enabled: result[6]! as bool,
+    );
+  }
+}
+
+class NativeFIPSearchResponse {
+  NativeFIPSearchResponse({
+    required this.searchOptions,
+  });
+
+  List<NativeFIPInfo?> searchOptions;
+
+  Object encode() {
+    return <Object?>[
+      searchOptions,
+    ];
+  }
+
+  static NativeFIPSearchResponse decode(Object result) {
+    result as List<Object?>;
+    return NativeFIPSearchResponse(
+      searchOptions: (result[0] as List<Object?>?)!.cast<NativeFIPInfo?>(),
+    );
+  }
+}
+
+class NativeEntityInfo {
+  NativeEntityInfo({
+    required this.entityId,
+    required this.entityName,
+    this.entityIconUri,
+    this.entityLogoUri,
+    this.entityLogoWithNameUri,
+  });
+
+  String entityId;
+
+  String entityName;
+
+  String? entityIconUri;
+
+  String? entityLogoUri;
+
+  String? entityLogoWithNameUri;
+
+  Object encode() {
+    return <Object?>[
+      entityId,
+      entityName,
+      entityIconUri,
+      entityLogoUri,
+      entityLogoWithNameUri,
+    ];
+  }
+
+  static NativeEntityInfo decode(Object result) {
+    result as List<Object?>;
+    return NativeEntityInfo(
+      entityId: result[0]! as String,
+      entityName: result[1]! as String,
+      entityIconUri: result[2] as String?,
+      entityLogoUri: result[3] as String?,
+      entityLogoWithNameUri: result[4] as String?,
+    );
+  }
+}
+
 class _NativeFinvuManagerCodec extends StandardMessageCodec {
   const _NativeFinvuManagerCodec();
   @override
@@ -826,47 +944,56 @@ class _NativeFinvuManagerCodec extends StandardMessageCodec {
     } else if (value is NativeDiscoveredAccountsResponse) {
       buffer.putUint8(139);
       writeValue(buffer, value.encode());
-    } else if (value is NativeFIPDetails) {
+    } else if (value is NativeEntityInfo) {
       buffer.putUint8(140);
       writeValue(buffer, value.encode());
-    } else if (value is NativeFIPFiTypeIdentifier) {
+    } else if (value is NativeFIPDetails) {
       buffer.putUint8(141);
       writeValue(buffer, value.encode());
-    } else if (value is NativeFIPReference) {
+    } else if (value is NativeFIPFiTypeIdentifier) {
       buffer.putUint8(142);
       writeValue(buffer, value.encode());
-    } else if (value is NativeFinancialInformationEntity) {
+    } else if (value is NativeFIPInfo) {
       buffer.putUint8(143);
       writeValue(buffer, value.encode());
-    } else if (value is NativeFinvuConfig) {
+    } else if (value is NativeFIPReference) {
       buffer.putUint8(144);
       writeValue(buffer, value.encode());
-    } else if (value is NativeHandleInfo) {
+    } else if (value is NativeFIPSearchResponse) {
       buffer.putUint8(145);
       writeValue(buffer, value.encode());
-    } else if (value is NativeLinkedAccountDetailsInfo) {
+    } else if (value is NativeFinancialInformationEntity) {
       buffer.putUint8(146);
       writeValue(buffer, value.encode());
-    } else if (value is NativeLinkedAccountInfo) {
+    } else if (value is NativeFinvuConfig) {
       buffer.putUint8(147);
       writeValue(buffer, value.encode());
-    } else if (value is NativeLinkedAccountsResponse) {
+    } else if (value is NativeHandleInfo) {
       buffer.putUint8(148);
       writeValue(buffer, value.encode());
-    } else if (value is NativeLoginOtpReference) {
+    } else if (value is NativeLinkedAccountDetailsInfo) {
       buffer.putUint8(149);
       writeValue(buffer, value.encode());
-    } else if (value is NativeProcessConsentRequestResponse) {
+    } else if (value is NativeLinkedAccountInfo) {
       buffer.putUint8(150);
       writeValue(buffer, value.encode());
-    } else if (value is NativeTypeIdentifier) {
+    } else if (value is NativeLinkedAccountsResponse) {
       buffer.putUint8(151);
       writeValue(buffer, value.encode());
-    } else if (value is NativeTypeIdentifierInfo) {
+    } else if (value is NativeLoginOtpReference) {
       buffer.putUint8(152);
       writeValue(buffer, value.encode());
-    } else if (value is NativeUserConsentInfoDetails) {
+    } else if (value is NativeProcessConsentRequestResponse) {
       buffer.putUint8(153);
+      writeValue(buffer, value.encode());
+    } else if (value is NativeTypeIdentifier) {
+      buffer.putUint8(154);
+      writeValue(buffer, value.encode());
+    } else if (value is NativeTypeIdentifierInfo) {
+      buffer.putUint8(155);
+      writeValue(buffer, value.encode());
+    } else if (value is NativeUserConsentInfoDetails) {
+      buffer.putUint8(156);
       writeValue(buffer, value.encode());
     } else {
       super.writeValue(buffer, value);
@@ -901,32 +1028,38 @@ class _NativeFinvuManagerCodec extends StandardMessageCodec {
       case 139: 
         return NativeDiscoveredAccountsResponse.decode(readValue(buffer)!);
       case 140: 
-        return NativeFIPDetails.decode(readValue(buffer)!);
+        return NativeEntityInfo.decode(readValue(buffer)!);
       case 141: 
-        return NativeFIPFiTypeIdentifier.decode(readValue(buffer)!);
+        return NativeFIPDetails.decode(readValue(buffer)!);
       case 142: 
-        return NativeFIPReference.decode(readValue(buffer)!);
+        return NativeFIPFiTypeIdentifier.decode(readValue(buffer)!);
       case 143: 
-        return NativeFinancialInformationEntity.decode(readValue(buffer)!);
+        return NativeFIPInfo.decode(readValue(buffer)!);
       case 144: 
-        return NativeFinvuConfig.decode(readValue(buffer)!);
+        return NativeFIPReference.decode(readValue(buffer)!);
       case 145: 
-        return NativeHandleInfo.decode(readValue(buffer)!);
+        return NativeFIPSearchResponse.decode(readValue(buffer)!);
       case 146: 
-        return NativeLinkedAccountDetailsInfo.decode(readValue(buffer)!);
+        return NativeFinancialInformationEntity.decode(readValue(buffer)!);
       case 147: 
-        return NativeLinkedAccountInfo.decode(readValue(buffer)!);
+        return NativeFinvuConfig.decode(readValue(buffer)!);
       case 148: 
-        return NativeLinkedAccountsResponse.decode(readValue(buffer)!);
+        return NativeHandleInfo.decode(readValue(buffer)!);
       case 149: 
-        return NativeLoginOtpReference.decode(readValue(buffer)!);
+        return NativeLinkedAccountDetailsInfo.decode(readValue(buffer)!);
       case 150: 
-        return NativeProcessConsentRequestResponse.decode(readValue(buffer)!);
+        return NativeLinkedAccountInfo.decode(readValue(buffer)!);
       case 151: 
-        return NativeTypeIdentifier.decode(readValue(buffer)!);
+        return NativeLinkedAccountsResponse.decode(readValue(buffer)!);
       case 152: 
-        return NativeTypeIdentifierInfo.decode(readValue(buffer)!);
+        return NativeLoginOtpReference.decode(readValue(buffer)!);
       case 153: 
+        return NativeProcessConsentRequestResponse.decode(readValue(buffer)!);
+      case 154: 
+        return NativeTypeIdentifier.decode(readValue(buffer)!);
+      case 155: 
+        return NativeTypeIdentifierInfo.decode(readValue(buffer)!);
+      case 156: 
         return NativeUserConsentInfoDetails.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
@@ -1267,6 +1400,87 @@ class NativeFinvuManager {
       );
     } else {
       return;
+    }
+  }
+
+  Future<NativeFIPSearchResponse> fipsAllFIPOptions() async {
+    const String __pigeon_channelName = 'dev.flutter.pigeon.finvu_flutter_sdk.NativeFinvuManager.fipsAllFIPOptions';
+    final BasicMessageChannel<Object?> __pigeon_channel = BasicMessageChannel<Object?>(
+      __pigeon_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: __pigeon_binaryMessenger,
+    );
+    final List<Object?>? __pigeon_replyList =
+        await __pigeon_channel.send(null) as List<Object?>?;
+    if (__pigeon_replyList == null) {
+      throw _createConnectionError(__pigeon_channelName);
+    } else if (__pigeon_replyList.length > 1) {
+      throw PlatformException(
+        code: __pigeon_replyList[0]! as String,
+        message: __pigeon_replyList[1] as String?,
+        details: __pigeon_replyList[2],
+      );
+    } else if (__pigeon_replyList[0] == null) {
+      throw PlatformException(
+        code: 'null-error',
+        message: 'Host platform returned null value for non-null return value.',
+      );
+    } else {
+      return (__pigeon_replyList[0] as NativeFIPSearchResponse?)!;
+    }
+  }
+
+  Future<NativeFIPDetails> fetchFIPDetails(String fipId) async {
+    const String __pigeon_channelName = 'dev.flutter.pigeon.finvu_flutter_sdk.NativeFinvuManager.fetchFIPDetails';
+    final BasicMessageChannel<Object?> __pigeon_channel = BasicMessageChannel<Object?>(
+      __pigeon_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: __pigeon_binaryMessenger,
+    );
+    final List<Object?>? __pigeon_replyList =
+        await __pigeon_channel.send(<Object?>[fipId]) as List<Object?>?;
+    if (__pigeon_replyList == null) {
+      throw _createConnectionError(__pigeon_channelName);
+    } else if (__pigeon_replyList.length > 1) {
+      throw PlatformException(
+        code: __pigeon_replyList[0]! as String,
+        message: __pigeon_replyList[1] as String?,
+        details: __pigeon_replyList[2],
+      );
+    } else if (__pigeon_replyList[0] == null) {
+      throw PlatformException(
+        code: 'null-error',
+        message: 'Host platform returned null value for non-null return value.',
+      );
+    } else {
+      return (__pigeon_replyList[0] as NativeFIPDetails?)!;
+    }
+  }
+
+  Future<NativeEntityInfo> getEntityInfo(String entityId, String entityType) async {
+    const String __pigeon_channelName = 'dev.flutter.pigeon.finvu_flutter_sdk.NativeFinvuManager.getEntityInfo';
+    final BasicMessageChannel<Object?> __pigeon_channel = BasicMessageChannel<Object?>(
+      __pigeon_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: __pigeon_binaryMessenger,
+    );
+    final List<Object?>? __pigeon_replyList =
+        await __pigeon_channel.send(<Object?>[entityId, entityType]) as List<Object?>?;
+    if (__pigeon_replyList == null) {
+      throw _createConnectionError(__pigeon_channelName);
+    } else if (__pigeon_replyList.length > 1) {
+      throw PlatformException(
+        code: __pigeon_replyList[0]! as String,
+        message: __pigeon_replyList[1] as String?,
+        details: __pigeon_replyList[2],
+      );
+    } else if (__pigeon_replyList[0] == null) {
+      throw PlatformException(
+        code: 'null-error',
+        message: 'Host platform returned null value for non-null return value.',
+      );
+    } else {
+      return (__pigeon_replyList[0] as NativeEntityInfo?)!;
     }
   }
 

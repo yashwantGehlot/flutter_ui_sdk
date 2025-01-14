@@ -10,7 +10,7 @@ class FinvuFIPInfo {
   });
 
   String fipId;
-  String productName;
+  String? productName;
   List<String> fipFitypes;
   String? fipFsr;
   String? productDesc;

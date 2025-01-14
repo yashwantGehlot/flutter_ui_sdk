@@ -416,6 +416,7 @@ struct NativeConsentRequestDetailInfo {
   var consentDataFrequency: NativeConsentDataFrequency
   var consentDataLifePeriod: NativeConsentDataLifePeriod
   var fiTypes: [String?]? = nil
+  var statusLastUpdateTimestamp: String? = nil
 
   static func fromList(_ list: [Any?]) -> NativeConsentRequestDetailInfo? {
     let consentHandleId = list[0] as! String
@@ -428,6 +429,7 @@ struct NativeConsentRequestDetailInfo {
     let consentDataFrequency = NativeConsentDataFrequency.fromList(list[7] as! [Any?])!
     let consentDataLifePeriod = NativeConsentDataLifePeriod.fromList(list[8] as! [Any?])!
     let fiTypes: [String?]? = nilOrValue(list[9])
+    let statusLastUpdateTimestamp: String? = nilOrValue(list[10])
 
     return NativeConsentRequestDetailInfo(
       consentHandleId: consentHandleId,
@@ -439,7 +441,8 @@ struct NativeConsentRequestDetailInfo {
       consentDateTimeRange: consentDateTimeRange,
       consentDataFrequency: consentDataFrequency,
       consentDataLifePeriod: consentDataLifePeriod,
-      fiTypes: fiTypes
+      fiTypes: fiTypes,
+      statusLastUpdateTimestamp: statusLastUpdateTimestamp
     )
   }
   func toList() -> [Any?] {
@@ -454,6 +457,7 @@ struct NativeConsentRequestDetailInfo {
       consentDataFrequency.toList(),
       consentDataLifePeriod.toList(),
       fiTypes,
+      statusLastUpdateTimestamp,
     ]
   }
 }
@@ -686,6 +690,100 @@ struct NativeConsentHandleStatusResponse {
   }
 }
 
+/// Generated class from Pigeon that represents data sent in messages.
+struct NativeFIPInfo {
+  var fipId: String
+  var productName: String? = nil
+  var fipFitypes: [String?]
+  var fipFsr: String? = nil
+  var productDesc: String? = nil
+  var productIconUri: String? = nil
+  var enabled: Bool
+
+  static func fromList(_ list: [Any?]) -> NativeFIPInfo? {
+    let fipId = list[0] as! String
+    let productName: String? = nilOrValue(list[1])
+    let fipFitypes = list[2] as! [String?]
+    let fipFsr: String? = nilOrValue(list[3])
+    let productDesc: String? = nilOrValue(list[4])
+    let productIconUri: String? = nilOrValue(list[5])
+    let enabled = list[6] as! Bool
+
+    return NativeFIPInfo(
+      fipId: fipId,
+      productName: productName,
+      fipFitypes: fipFitypes,
+      fipFsr: fipFsr,
+      productDesc: productDesc,
+      productIconUri: productIconUri,
+      enabled: enabled
+    )
+  }
+  func toList() -> [Any?] {
+    return [
+      fipId,
+      productName,
+      fipFitypes,
+      fipFsr,
+      productDesc,
+      productIconUri,
+      enabled,
+    ]
+  }
+}
+
+/// Generated class from Pigeon that represents data sent in messages.
+struct NativeFIPSearchResponse {
+  var searchOptions: [NativeFIPInfo?]
+
+  static func fromList(_ list: [Any?]) -> NativeFIPSearchResponse? {
+    let searchOptions = list[0] as! [NativeFIPInfo?]
+
+    return NativeFIPSearchResponse(
+      searchOptions: searchOptions
+    )
+  }
+  func toList() -> [Any?] {
+    return [
+      searchOptions,
+    ]
+  }
+}
+
+/// Generated class from Pigeon that represents data sent in messages.
+struct NativeEntityInfo {
+  var entityId: String
+  var entityName: String
+  var entityIconUri: String? = nil
+  var entityLogoUri: String? = nil
+  var entityLogoWithNameUri: String? = nil
+
+  static func fromList(_ list: [Any?]) -> NativeEntityInfo? {
+    let entityId = list[0] as! String
+    let entityName = list[1] as! String
+    let entityIconUri: String? = nilOrValue(list[2])
+    let entityLogoUri: String? = nilOrValue(list[3])
+    let entityLogoWithNameUri: String? = nilOrValue(list[4])
+
+    return NativeEntityInfo(
+      entityId: entityId,
+      entityName: entityName,
+      entityIconUri: entityIconUri,
+      entityLogoUri: entityLogoUri,
+      entityLogoWithNameUri: entityLogoWithNameUri
+    )
+  }
+  func toList() -> [Any?] {
+    return [
+      entityId,
+      entityName,
+      entityIconUri,
+      entityLogoUri,
+      entityLogoWithNameUri,
+    ]
+  }
+}
+
 private class NativeFinvuManagerCodecReader: FlutterStandardReader {
   override func readValue(ofType type: UInt8) -> Any? {
     switch type {
@@ -714,32 +812,38 @@ private class NativeFinvuManagerCodecReader: FlutterStandardReader {
       case 139:
         return NativeDiscoveredAccountsResponse.fromList(self.readValue() as! [Any?])
       case 140:
-        return NativeFIPDetails.fromList(self.readValue() as! [Any?])
+        return NativeEntityInfo.fromList(self.readValue() as! [Any?])
       case 141:
-        return NativeFIPFiTypeIdentifier.fromList(self.readValue() as! [Any?])
+        return NativeFIPDetails.fromList(self.readValue() as! [Any?])
       case 142:
-        return NativeFIPReference.fromList(self.readValue() as! [Any?])
+        return NativeFIPFiTypeIdentifier.fromList(self.readValue() as! [Any?])
       case 143:
-        return NativeFinancialInformationEntity.fromList(self.readValue() as! [Any?])
+        return NativeFIPInfo.fromList(self.readValue() as! [Any?])
       case 144:
-        return NativeFinvuConfig.fromList(self.readValue() as! [Any?])
+        return NativeFIPReference.fromList(self.readValue() as! [Any?])
       case 145:
-        return NativeHandleInfo.fromList(self.readValue() as! [Any?])
+        return NativeFIPSearchResponse.fromList(self.readValue() as! [Any?])
       case 146:
-        return NativeLinkedAccountDetailsInfo.fromList(self.readValue() as! [Any?])
+        return NativeFinancialInformationEntity.fromList(self.readValue() as! [Any?])
       case 147:
-        return NativeLinkedAccountInfo.fromList(self.readValue() as! [Any?])
+        return NativeFinvuConfig.fromList(self.readValue() as! [Any?])
       case 148:
-        return NativeLinkedAccountsResponse.fromList(self.readValue() as! [Any?])
+        return NativeHandleInfo.fromList(self.readValue() as! [Any?])
       case 149:
-        return NativeLoginOtpReference.fromList(self.readValue() as! [Any?])
+        return NativeLinkedAccountDetailsInfo.fromList(self.readValue() as! [Any?])
       case 150:
-        return NativeProcessConsentRequestResponse.fromList(self.readValue() as! [Any?])
+        return NativeLinkedAccountInfo.fromList(self.readValue() as! [Any?])
       case 151:
-        return NativeTypeIdentifier.fromList(self.readValue() as! [Any?])
+        return NativeLinkedAccountsResponse.fromList(self.readValue() as! [Any?])
       case 152:
-        return NativeTypeIdentifierInfo.fromList(self.readValue() as! [Any?])
+        return NativeLoginOtpReference.fromList(self.readValue() as! [Any?])
       case 153:
+        return NativeProcessConsentRequestResponse.fromList(self.readValue() as! [Any?])
+      case 154:
+        return NativeTypeIdentifier.fromList(self.readValue() as! [Any?])
+      case 155:
+        return NativeTypeIdentifierInfo.fromList(self.readValue() as! [Any?])
+      case 156:
         return NativeUserConsentInfoDetails.fromList(self.readValue() as! [Any?])
       default:
         return super.readValue(ofType: type)
@@ -785,47 +889,56 @@ private class NativeFinvuManagerCodecWriter: FlutterStandardWriter {
     } else if let value = value as? NativeDiscoveredAccountsResponse {
       super.writeByte(139)
       super.writeValue(value.toList())
-    } else if let value = value as? NativeFIPDetails {
+    } else if let value = value as? NativeEntityInfo {
       super.writeByte(140)
       super.writeValue(value.toList())
-    } else if let value = value as? NativeFIPFiTypeIdentifier {
+    } else if let value = value as? NativeFIPDetails {
       super.writeByte(141)
       super.writeValue(value.toList())
-    } else if let value = value as? NativeFIPReference {
+    } else if let value = value as? NativeFIPFiTypeIdentifier {
       super.writeByte(142)
       super.writeValue(value.toList())
-    } else if let value = value as? NativeFinancialInformationEntity {
+    } else if let value = value as? NativeFIPInfo {
       super.writeByte(143)
       super.writeValue(value.toList())
-    } else if let value = value as? NativeFinvuConfig {
+    } else if let value = value as? NativeFIPReference {
       super.writeByte(144)
       super.writeValue(value.toList())
-    } else if let value = value as? NativeHandleInfo {
+    } else if let value = value as? NativeFIPSearchResponse {
       super.writeByte(145)
       super.writeValue(value.toList())
-    } else if let value = value as? NativeLinkedAccountDetailsInfo {
+    } else if let value = value as? NativeFinancialInformationEntity {
       super.writeByte(146)
       super.writeValue(value.toList())
-    } else if let value = value as? NativeLinkedAccountInfo {
+    } else if let value = value as? NativeFinvuConfig {
       super.writeByte(147)
       super.writeValue(value.toList())
-    } else if let value = value as? NativeLinkedAccountsResponse {
+    } else if let value = value as? NativeHandleInfo {
       super.writeByte(148)
       super.writeValue(value.toList())
-    } else if let value = value as? NativeLoginOtpReference {
+    } else if let value = value as? NativeLinkedAccountDetailsInfo {
       super.writeByte(149)
       super.writeValue(value.toList())
-    } else if let value = value as? NativeProcessConsentRequestResponse {
+    } else if let value = value as? NativeLinkedAccountInfo {
       super.writeByte(150)
       super.writeValue(value.toList())
-    } else if let value = value as? NativeTypeIdentifier {
+    } else if let value = value as? NativeLinkedAccountsResponse {
       super.writeByte(151)
       super.writeValue(value.toList())
-    } else if let value = value as? NativeTypeIdentifierInfo {
+    } else if let value = value as? NativeLoginOtpReference {
       super.writeByte(152)
       super.writeValue(value.toList())
-    } else if let value = value as? NativeUserConsentInfoDetails {
+    } else if let value = value as? NativeProcessConsentRequestResponse {
       super.writeByte(153)
+      super.writeValue(value.toList())
+    } else if let value = value as? NativeTypeIdentifier {
+      super.writeByte(154)
+      super.writeValue(value.toList())
+    } else if let value = value as? NativeTypeIdentifierInfo {
+      super.writeByte(155)
+      super.writeValue(value.toList())
+    } else if let value = value as? NativeUserConsentInfoDetails {
+      super.writeByte(156)
       super.writeValue(value.toList())
     } else {
       super.writeValue(value)
@@ -862,6 +975,9 @@ protocol NativeFinvuManager {
   func fetchLinkedAccounts(completion: @escaping (Result<NativeLinkedAccountsResponse, Error>) -> Void)
   func initiateMobileVerification(mobileNumber: String, completion: @escaping (Result<Void, Error>) -> Void)
   func completeMobileVerification(mobileNumber: String, otp: String, completion: @escaping (Result<Void, Error>) -> Void)
+  func fipsAllFIPOptions(completion: @escaping (Result<NativeFIPSearchResponse, Error>) -> Void)
+  func fetchFIPDetails(fipId: String, completion: @escaping (Result<NativeFIPDetails, Error>) -> Void)
+  func getEntityInfo(entityId: String, entityType: String, completion: @escaping (Result<NativeEntityInfo, Error>) -> Void)
   func approveConsentRequest(consentRequest: NativeConsentRequestDetailInfo, linkedAccounts: [NativeLinkedAccountDetailsInfo], completion: @escaping (Result<NativeProcessConsentRequestResponse, Error>) -> Void)
   func denyConsentRequest(consentRequest: NativeConsentRequestDetailInfo, completion: @escaping (Result<NativeProcessConsentRequestResponse, Error>) -> Void)
   func revokeConsent(consent: NativeUserConsentInfoDetails, accountAggregator: NativeAccountAggregator?, fipDetails: NativeFIPReference?, completion: @escaping (Result<Void, Error>) -> Void)
@@ -1086,6 +1202,56 @@ class NativeFinvuManagerSetup {
       }
     } else {
       completeMobileVerificationChannel.setMessageHandler(nil)
+    }
+    let fipsAllFIPOptionsChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.finvu_flutter_sdk.NativeFinvuManager.fipsAllFIPOptions", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      fipsAllFIPOptionsChannel.setMessageHandler { _, reply in
+        api.fipsAllFIPOptions() { result in
+          switch result {
+            case .success(let res):
+              reply(wrapResult(res))
+            case .failure(let error):
+              reply(wrapError(error))
+          }
+        }
+      }
+    } else {
+      fipsAllFIPOptionsChannel.setMessageHandler(nil)
+    }
+    let fetchFIPDetailsChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.finvu_flutter_sdk.NativeFinvuManager.fetchFIPDetails", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      fetchFIPDetailsChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let fipIdArg = args[0] as! String
+        api.fetchFIPDetails(fipId: fipIdArg) { result in
+          switch result {
+            case .success(let res):
+              reply(wrapResult(res))
+            case .failure(let error):
+              reply(wrapError(error))
+          }
+        }
+      }
+    } else {
+      fetchFIPDetailsChannel.setMessageHandler(nil)
+    }
+    let getEntityInfoChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.finvu_flutter_sdk.NativeFinvuManager.getEntityInfo", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      getEntityInfoChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let entityIdArg = args[0] as! String
+        let entityTypeArg = args[1] as! String
+        api.getEntityInfo(entityId: entityIdArg, entityType: entityTypeArg) { result in
+          switch result {
+            case .success(let res):
+              reply(wrapResult(res))
+            case .failure(let error):
+              reply(wrapError(error))
+          }
+        }
+      }
+    } else {
+      getEntityInfoChannel.setMessageHandler(nil)
     }
     let approveConsentRequestChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.finvu_flutter_sdk.NativeFinvuManager.approveConsentRequest", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {

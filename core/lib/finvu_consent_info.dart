@@ -138,10 +138,12 @@ class FinvuConsentAccountDetails {
     required this.accountType,
     required this.linkReferenceNumber,
     required this.fipId,
+    required this.fipName,
   });
 
   String fiType;
   String fipId;
+  String fipName;
   String accountType;
   String? accountReferenceNumber;
   String maskedAccountNumber;

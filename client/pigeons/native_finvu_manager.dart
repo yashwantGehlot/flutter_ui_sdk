@@ -281,7 +281,7 @@ class NativeAccountAggregator {
   NativeAccountAggregator({
     required this.id,
   });
-  
+
   String id;
 }
 
@@ -325,6 +325,49 @@ class NativeConsentHandleStatusResponse {
     required this.status,
   });
   String status;
+}
+
+class NativeFIPInfo {
+  NativeFIPInfo({
+    required this.fipId,
+    required this.productName,
+    required this.fipFitypes,
+    required this.productDesc,
+    required this.productIconUri,
+    required this.enabled,
+    this.fipFsr,
+  });
+
+  String fipId;
+  String? productName;
+  List<String?> fipFitypes;
+  String? fipFsr;
+  String? productDesc;
+  String? productIconUri;
+  bool enabled;
+}
+
+class NativeFIPSearchResponse {
+  NativeFIPSearchResponse({
+    required this.searchOptions,
+  });
+  List<NativeFIPInfo?> searchOptions;
+}
+
+class NativeEntityInfo {
+  NativeEntityInfo({
+    required this.entityId,
+    required this.entityName,
+    required this.entityIconUri,
+    required this.entityLogoUri,
+    required this.entityLogoWithNameUri,
+  });
+
+  String entityId;
+  String entityName;
+  String? entityIconUri;
+  String? entityLogoUri;
+  String? entityLogoWithNameUri;
 }
 
 @HostApi()
@@ -382,6 +425,15 @@ abstract class NativeFinvuManager {
   void completeMobileVerification(String mobileNumber, String otp);
 
   @async
+  NativeFIPSearchResponse fipsAllFIPOptions();
+
+  @async
+  NativeFIPDetails fetchFIPDetails(String fipId);
+
+  @async
+  NativeEntityInfo getEntityInfo(String entityId, String entityType);
+
+  @async
   NativeProcessConsentRequestResponse approveConsentRequest(
     NativeConsentRequestDetailInfo consentRequest,
     List<NativeLinkedAccountDetailsInfo> linkedAccounts,
@@ -393,7 +445,11 @@ abstract class NativeFinvuManager {
   );
 
   @async
-  void revokeConsent(NativeUserConsentInfoDetails consent, NativeAccountAggregator? accountAggregator, NativeFIPReference? fipDetails);
+  void revokeConsent(
+    NativeUserConsentInfoDetails consent,
+    NativeAccountAggregator? accountAggregator,
+    NativeFIPReference? fipDetails,
+  );
 
   @async
   NativeConsentHandleStatusResponse getConsentHandleStatus(String handleId);

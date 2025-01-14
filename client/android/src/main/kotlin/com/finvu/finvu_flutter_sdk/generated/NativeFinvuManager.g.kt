@@ -410,7 +410,8 @@ data class NativeConsentRequestDetailInfo (
   val consentDateTimeRange: NativeDateTimeRange,
   val consentDataFrequency: NativeConsentDataFrequency,
   val consentDataLifePeriod: NativeConsentDataLifePeriod,
-  val fiTypes: List<String?>? = null
+  val fiTypes: List<String?>? = null,
+  val statusLastUpdateTimestamp: String? = null
 
 ) {
   companion object {
@@ -426,7 +427,8 @@ data class NativeConsentRequestDetailInfo (
       val consentDataFrequency = NativeConsentDataFrequency.fromList(list[7] as List<Any?>)
       val consentDataLifePeriod = NativeConsentDataLifePeriod.fromList(list[8] as List<Any?>)
       val fiTypes = list[9] as List<String?>?
-      return NativeConsentRequestDetailInfo(consentHandleId, consentId, financialInformationUser, consentPurposeInfo, consentDisplayDescriptions, dataDateTimeRange, consentDateTimeRange, consentDataFrequency, consentDataLifePeriod, fiTypes)
+      val statusLastUpdateTimestamp = list[10] as String?
+      return NativeConsentRequestDetailInfo(consentHandleId, consentId, financialInformationUser, consentPurposeInfo, consentDisplayDescriptions, dataDateTimeRange, consentDateTimeRange, consentDataFrequency, consentDataLifePeriod, fiTypes, statusLastUpdateTimestamp)
     }
   }
   fun toList(): List<Any?> {
@@ -441,6 +443,7 @@ data class NativeConsentRequestDetailInfo (
       consentDataFrequency.toList(),
       consentDataLifePeriod.toList(),
       fiTypes,
+      statusLastUpdateTimestamp,
     )
   }
 }
@@ -671,6 +674,93 @@ data class NativeConsentHandleStatusResponse (
   }
 }
 
+/** Generated class from Pigeon that represents data sent in messages. */
+data class NativeFIPInfo (
+  val fipId: String,
+  val productName: String? = null,
+  val fipFitypes: List<String?>,
+  val fipFsr: String? = null,
+  val productDesc: String? = null,
+  val productIconUri: String? = null,
+  val enabled: Boolean
+
+) {
+  companion object {
+    @Suppress("UNCHECKED_CAST")
+    fun fromList(list: List<Any?>): NativeFIPInfo {
+      val fipId = list[0] as String
+      val productName = list[1] as String?
+      val fipFitypes = list[2] as List<String?>
+      val fipFsr = list[3] as String?
+      val productDesc = list[4] as String?
+      val productIconUri = list[5] as String?
+      val enabled = list[6] as Boolean
+      return NativeFIPInfo(fipId, productName, fipFitypes, fipFsr, productDesc, productIconUri, enabled)
+    }
+  }
+  fun toList(): List<Any?> {
+    return listOf<Any?>(
+      fipId,
+      productName,
+      fipFitypes,
+      fipFsr,
+      productDesc,
+      productIconUri,
+      enabled,
+    )
+  }
+}
+
+/** Generated class from Pigeon that represents data sent in messages. */
+data class NativeFIPSearchResponse (
+  val searchOptions: List<NativeFIPInfo?>
+
+) {
+  companion object {
+    @Suppress("UNCHECKED_CAST")
+    fun fromList(list: List<Any?>): NativeFIPSearchResponse {
+      val searchOptions = list[0] as List<NativeFIPInfo?>
+      return NativeFIPSearchResponse(searchOptions)
+    }
+  }
+  fun toList(): List<Any?> {
+    return listOf<Any?>(
+      searchOptions,
+    )
+  }
+}
+
+/** Generated class from Pigeon that represents data sent in messages. */
+data class NativeEntityInfo (
+  val entityId: String,
+  val entityName: String,
+  val entityIconUri: String? = null,
+  val entityLogoUri: String? = null,
+  val entityLogoWithNameUri: String? = null
+
+) {
+  companion object {
+    @Suppress("UNCHECKED_CAST")
+    fun fromList(list: List<Any?>): NativeEntityInfo {
+      val entityId = list[0] as String
+      val entityName = list[1] as String
+      val entityIconUri = list[2] as String?
+      val entityLogoUri = list[3] as String?
+      val entityLogoWithNameUri = list[4] as String?
+      return NativeEntityInfo(entityId, entityName, entityIconUri, entityLogoUri, entityLogoWithNameUri)
+    }
+  }
+  fun toList(): List<Any?> {
+    return listOf<Any?>(
+      entityId,
+      entityName,
+      entityIconUri,
+      entityLogoUri,
+      entityLogoWithNameUri,
+    )
+  }
+}
+
 @Suppress("UNCHECKED_CAST")
 private object NativeFinvuManagerCodec : StandardMessageCodec() {
   override fun readValueOfType(type: Byte, buffer: ByteBuffer): Any? {
@@ -737,70 +827,85 @@ private object NativeFinvuManagerCodec : StandardMessageCodec() {
       }
       140.toByte() -> {
         return (readValue(buffer) as? List<Any?>)?.let {
-          NativeFIPDetails.fromList(it)
+          NativeEntityInfo.fromList(it)
         }
       }
       141.toByte() -> {
         return (readValue(buffer) as? List<Any?>)?.let {
-          NativeFIPFiTypeIdentifier.fromList(it)
+          NativeFIPDetails.fromList(it)
         }
       }
       142.toByte() -> {
         return (readValue(buffer) as? List<Any?>)?.let {
-          NativeFIPReference.fromList(it)
+          NativeFIPFiTypeIdentifier.fromList(it)
         }
       }
       143.toByte() -> {
         return (readValue(buffer) as? List<Any?>)?.let {
-          NativeFinancialInformationEntity.fromList(it)
+          NativeFIPInfo.fromList(it)
         }
       }
       144.toByte() -> {
         return (readValue(buffer) as? List<Any?>)?.let {
-          NativeFinvuConfig.fromList(it)
+          NativeFIPReference.fromList(it)
         }
       }
       145.toByte() -> {
         return (readValue(buffer) as? List<Any?>)?.let {
-          NativeHandleInfo.fromList(it)
+          NativeFIPSearchResponse.fromList(it)
         }
       }
       146.toByte() -> {
         return (readValue(buffer) as? List<Any?>)?.let {
-          NativeLinkedAccountDetailsInfo.fromList(it)
+          NativeFinancialInformationEntity.fromList(it)
         }
       }
       147.toByte() -> {
         return (readValue(buffer) as? List<Any?>)?.let {
-          NativeLinkedAccountInfo.fromList(it)
+          NativeFinvuConfig.fromList(it)
         }
       }
       148.toByte() -> {
         return (readValue(buffer) as? List<Any?>)?.let {
-          NativeLinkedAccountsResponse.fromList(it)
+          NativeHandleInfo.fromList(it)
         }
       }
       149.toByte() -> {
         return (readValue(buffer) as? List<Any?>)?.let {
-          NativeLoginOtpReference.fromList(it)
+          NativeLinkedAccountDetailsInfo.fromList(it)
         }
       }
       150.toByte() -> {
         return (readValue(buffer) as? List<Any?>)?.let {
-          NativeProcessConsentRequestResponse.fromList(it)
+          NativeLinkedAccountInfo.fromList(it)
         }
       }
       151.toByte() -> {
         return (readValue(buffer) as? List<Any?>)?.let {
-          NativeTypeIdentifier.fromList(it)
+          NativeLinkedAccountsResponse.fromList(it)
         }
       }
       152.toByte() -> {
         return (readValue(buffer) as? List<Any?>)?.let {
-          NativeTypeIdentifierInfo.fromList(it)
+          NativeLoginOtpReference.fromList(it)
         }
       }
       153.toByte() -> {
+        return (readValue(buffer) as? List<Any?>)?.let {
+          NativeProcessConsentRequestResponse.fromList(it)
+        }
+      }
+      154.toByte() -> {
+        return (readValue(buffer) as? List<Any?>)?.let {
+          NativeTypeIdentifier.fromList(it)
+        }
+      }
+      155.toByte() -> {
+        return (readValue(buffer) as? List<Any?>)?.let {
+          NativeTypeIdentifierInfo.fromList(it)
+        }
+      }
+      156.toByte() -> {
         return (readValue(buffer) as? List<Any?>)?.let {
           NativeUserConsentInfoDetails.fromList(it)
         }
@@ -858,60 +963,72 @@ private object NativeFinvuManagerCodec : StandardMessageCodec() {
         stream.write(139)
         writeValue(stream, value.toList())
       }
-      is NativeFIPDetails -> {
+      is NativeEntityInfo -> {
         stream.write(140)
         writeValue(stream, value.toList())
       }
-      is NativeFIPFiTypeIdentifier -> {
+      is NativeFIPDetails -> {
         stream.write(141)
         writeValue(stream, value.toList())
       }
-      is NativeFIPReference -> {
+      is NativeFIPFiTypeIdentifier -> {
         stream.write(142)
         writeValue(stream, value.toList())
       }
-      is NativeFinancialInformationEntity -> {
+      is NativeFIPInfo -> {
         stream.write(143)
         writeValue(stream, value.toList())
       }
-      is NativeFinvuConfig -> {
+      is NativeFIPReference -> {
         stream.write(144)
         writeValue(stream, value.toList())
       }
-      is NativeHandleInfo -> {
+      is NativeFIPSearchResponse -> {
         stream.write(145)
         writeValue(stream, value.toList())
       }
-      is NativeLinkedAccountDetailsInfo -> {
+      is NativeFinancialInformationEntity -> {
         stream.write(146)
         writeValue(stream, value.toList())
       }
-      is NativeLinkedAccountInfo -> {
+      is NativeFinvuConfig -> {
         stream.write(147)
         writeValue(stream, value.toList())
       }
-      is NativeLinkedAccountsResponse -> {
+      is NativeHandleInfo -> {
         stream.write(148)
         writeValue(stream, value.toList())
       }
-      is NativeLoginOtpReference -> {
+      is NativeLinkedAccountDetailsInfo -> {
         stream.write(149)
         writeValue(stream, value.toList())
       }
-      is NativeProcessConsentRequestResponse -> {
+      is NativeLinkedAccountInfo -> {
         stream.write(150)
         writeValue(stream, value.toList())
       }
-      is NativeTypeIdentifier -> {
+      is NativeLinkedAccountsResponse -> {
         stream.write(151)
         writeValue(stream, value.toList())
       }
-      is NativeTypeIdentifierInfo -> {
+      is NativeLoginOtpReference -> {
         stream.write(152)
         writeValue(stream, value.toList())
       }
-      is NativeUserConsentInfoDetails -> {
+      is NativeProcessConsentRequestResponse -> {
         stream.write(153)
+        writeValue(stream, value.toList())
+      }
+      is NativeTypeIdentifier -> {
+        stream.write(154)
+        writeValue(stream, value.toList())
+      }
+      is NativeTypeIdentifierInfo -> {
+        stream.write(155)
+        writeValue(stream, value.toList())
+      }
+      is NativeUserConsentInfoDetails -> {
+        stream.write(156)
         writeValue(stream, value.toList())
       }
       else -> super.writeValue(stream, value)
@@ -934,6 +1051,9 @@ interface NativeFinvuManager {
   fun fetchLinkedAccounts(callback: (Result<NativeLinkedAccountsResponse>) -> Unit)
   fun initiateMobileVerification(mobileNumber: String, callback: (Result<Unit>) -> Unit)
   fun completeMobileVerification(mobileNumber: String, otp: String, callback: (Result<Unit>) -> Unit)
+  fun fipsAllFIPOptions(callback: (Result<NativeFIPSearchResponse>) -> Unit)
+  fun fetchFIPDetails(fipId: String, callback: (Result<NativeFIPDetails>) -> Unit)
+  fun getEntityInfo(entityId: String, entityType: String, callback: (Result<NativeEntityInfo>) -> Unit)
   fun approveConsentRequest(consentRequest: NativeConsentRequestDetailInfo, linkedAccounts: List<NativeLinkedAccountDetailsInfo>, callback: (Result<NativeProcessConsentRequestResponse>) -> Unit)
   fun denyConsentRequest(consentRequest: NativeConsentRequestDetailInfo, callback: (Result<NativeProcessConsentRequestResponse>) -> Unit)
   fun revokeConsent(consent: NativeUserConsentInfoDetails, accountAggregator: NativeAccountAggregator?, fipDetails: NativeFIPReference?, callback: (Result<Unit>) -> Unit)
@@ -1191,6 +1311,65 @@ interface NativeFinvuManager {
                 reply.reply(wrapError(error))
               } else {
                 reply.reply(wrapResult(null))
+              }
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.finvu_flutter_sdk.NativeFinvuManager.fipsAllFIPOptions", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            api.fipsAllFIPOptions() { result: Result<NativeFIPSearchResponse> ->
+              val error = result.exceptionOrNull()
+              if (error != null) {
+                reply.reply(wrapError(error))
+              } else {
+                val data = result.getOrNull()
+                reply.reply(wrapResult(data))
+              }
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.finvu_flutter_sdk.NativeFinvuManager.fetchFIPDetails", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val fipIdArg = args[0] as String
+            api.fetchFIPDetails(fipIdArg) { result: Result<NativeFIPDetails> ->
+              val error = result.exceptionOrNull()
+              if (error != null) {
+                reply.reply(wrapError(error))
+              } else {
+                val data = result.getOrNull()
+                reply.reply(wrapResult(data))
+              }
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.finvu_flutter_sdk.NativeFinvuManager.getEntityInfo", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val entityIdArg = args[0] as String
+            val entityTypeArg = args[1] as String
+            api.getEntityInfo(entityIdArg, entityTypeArg) { result: Result<NativeEntityInfo> ->
+              val error = result.exceptionOrNull()
+              if (error != null) {
+                reply.reply(wrapError(error))
+              } else {
+                val data = result.getOrNull()
+                reply.reply(wrapResult(data))
               }
             }
           }

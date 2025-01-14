@@ -5,15 +5,19 @@ PODS:
   - FinvuSDK (0.1.0):
     - FinvuSDK/Client (= 0.1.0)
     - Starscream (~> 4.0.6)
+    - TrustKit (~> 3.0.4)
   - FinvuSDK/Client (0.1.0):
     - FinvuSDK/Core
     - Starscream (~> 4.0.6)
+    - TrustKit (~> 3.0.4)
   - FinvuSDK/Core (0.1.0):
     - Starscream (~> 4.0.6)
+    - TrustKit (~> 3.0.4)
   - Flutter (1.0.0)
   - integration_test (0.0.1):
     - Flutter
-  - Starscream (4.0.6)
+  - Starscream (4.0.8)
+  - TrustKit (3.0.4)
 
 DEPENDENCIES:
   - finvu_flutter_sdk (from `.symlinks/plugins/finvu_flutter_sdk/ios`)
@@ -24,6 +28,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - Starscream
+    - TrustKit
 
 EXTERNAL SOURCES:
   finvu_flutter_sdk:
@@ -37,11 +42,12 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   finvu_flutter_sdk: d39c869b1fae0d22e4a40ae49154f479cba53105
-  FinvuSDK: 93539ca73bff542962f4ccefda2f17347a4fadb2
+  FinvuSDK: eedcb18fa63b84f850228731f28d5bc92471db5b
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  integration_test: 13825b8a9334a850581300559b8839134b124670
-  Starscream: fb2c4510bebf908c62bd383bcf05e673720e91fd
+  integration_test: ce0a3ffa1de96d1a89ca0ac26fca7ea18a749ef4
+  Starscream: 19b5533ddb925208db698f0ac508a100b884a1b9
+  TrustKit: 403e8d2cfbff2abfc37cd41acc558dab8ec78e59
 
 PODFILE CHECKSUM: 07ede0bc2e3d0d64a8ecd087a8f96a7fba5d862f
 
-COCOAPODS: 1.14.3
+COCOAPODS: 1.15.2

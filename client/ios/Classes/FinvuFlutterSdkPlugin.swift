@@ -183,6 +183,7 @@ public class FinvuFlutterSdkPlugin: NSObject, FlutterPlugin, NativeFinvuManager 
         let consentDetail = ConsentRequestDetailInfo(
             consentId: consentRequest.consentId,
             consentHandle: consentRequest.consentHandleId,
+            statusLastUpdateTimestamp: nil,
             financialInformationUser: FinancialInformationEntityInfo(
                 id: consentRequest.financialInformationUser.id,
                 name: consentRequest.financialInformationUser.name
@@ -256,6 +257,7 @@ public class FinvuFlutterSdkPlugin: NSObject, FlutterPlugin, NativeFinvuManager 
         let consentDetail = ConsentRequestDetailInfo(
             consentId: consentRequest.consentId,
             consentHandle: consentRequest.consentHandleId,
+            statusLastUpdateTimestamp: nil,
             financialInformationUser: FinancialInformationEntityInfo(
                 id: consentRequest.financialInformationUser.id,
                 name: consentRequest.financialInformationUser.name
@@ -360,7 +362,8 @@ public class FinvuFlutterSdkPlugin: NSObject, FlutterPlugin, NativeFinvuManager 
                 consentDataLifePeriod: NativeConsentDataLifePeriod(
                     unit: consentRequestDetail.consentDataLifePeriod.unit,
                     value: consentRequestDetail.consentDataLifePeriod.value),
-                fiTypes: consentRequestDetail.fiTypes
+                fiTypes: consentRequestDetail.fiTypes,
+                statusLastUpdateTimestamp: self.getDateOrNil(date: consentRequestDetail.statusLastUpdateTimestamp)
             )
         }
     }
@@ -376,6 +379,54 @@ public class FinvuFlutterSdkPlugin: NSObject, FlutterPlugin, NativeFinvuManager 
         }
     }
     
+
+    func fipsAllFIPOptions(completion: @escaping (Result<NativeFIPSearchResponse, any Error>) -> Void) {
+        FinvuManager.shared.fipsAllFIPOptions { fipSearchResponse, error in
+            if (error != nil) {
+                completion(.failure(FlutterError(code: "\(error!.code)", message: error?.localizedDescription, details: nil)))
+            } else {
+                let fipInfoList = fipSearchResponse!.searchOptions.map { fipInfo in
+                    NativeFIPInfo(fipId: fipInfo.fipId, productName: fipInfo.productName, fipFitypes: fipInfo.fipFitypes, productDesc: fipInfo.productDesc, productIconUri: fipInfo.productIconUri, enabled: fipInfo.enabled)
+                }
+                completion(.success(NativeFIPSearchResponse(searchOptions: fipInfoList)))
+            }
+        }
+    }
+    
+    func fetchFIPDetails(fipId: String, completion: @escaping (Result<NativeFIPDetails, any Error>) -> Void) {
+        FinvuManager.shared.fetchFIPDetails(fipId: fipId) { fipDetails, error in
+            if (error != nil) {
+                completion(.failure(FlutterError(code: "\(error!.code)", message: error?.localizedDescription, details: nil)))
+                return
+            }
+            
+            let typeIdentifiers = fipDetails!.typeIdentifiers.map { typeIdentifier in
+                let identifiers = typeIdentifier.identifiers.map { identifier in
+                    NativeTypeIdentifier(type: identifier.type, category: identifier.category)
+                }
+                return NativeFIPFiTypeIdentifier(fiType: typeIdentifier.fiType, identifiers: identifiers)
+            }
+            completion(.success(NativeFIPDetails(fipId: fipDetails!.fipId, typeIdentifiers: typeIdentifiers)))
+        }
+    }
+
+    func getEntityInfo(entityId: String, entityType: String, completion: @escaping (Result<NativeEntityInfo, Error>) -> Void) {
+        FinvuManager.shared.getEntityInfo(entityId: entityId, entityType: entityType) { response, error in
+            if (error != nil) {
+                completion(.failure(FlutterError(code: "\(error!.code)", message: error?.localizedDescription, details: nil)))
+                return
+            }
+            
+            let entityInfo = response!
+            let entity = NativeEntityInfo(entityId: entityInfo.entityId,
+                                          entityName: entityInfo.entityName,
+                                          entityIconUri: entityInfo.entityIconUri,
+                                          entityLogoUri: entityInfo.entityLogoUri,
+                                          entityLogoWithNameUri: entityInfo.entityLogoWithNameUri)
+            completion(.success(entity))
+        }
+    }
+    
     func logout(completion: @escaping (Result<Void, Error>) -> Void) {
         FinvuManager.shared.logout { error in
             if (error != nil) {
@@ -384,6 +435,14 @@ public class FinvuFlutterSdkPlugin: NSObject, FlutterPlugin, NativeFinvuManager 
             }
             
             completion(.success(()))
+        }
+    }
+    
+    func getDateOrNil(date: Date?) -> String? {
+        return if (date != nil) {
+            self.formatter.string(from: date!)
+        } else {
+            nil
         }
     }
 }

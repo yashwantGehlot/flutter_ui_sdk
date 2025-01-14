@@ -4,6 +4,7 @@ import 'package:finvu_flutter_sdk_core/finvu_consent_info.dart';
 import 'package:finvu_flutter_sdk_core/finvu_discovered_accounts.dart';
 import 'package:finvu_flutter_sdk_core/finvu_exception.dart';
 import 'package:finvu_flutter_sdk_core/finvu_fip_details.dart';
+import 'package:finvu_flutter_sdk_core/finvu_fip_info.dart';
 import 'package:finvu_flutter_sdk_core/finvu_handle_info.dart';
 import 'package:finvu_flutter_sdk_core/finvu_linked_accounts.dart';
 import 'package:flutter/services.dart';
@@ -234,11 +235,76 @@ class FinvuManager {
         );
   }
 
-  /// API to initiate the account linking process for [accounts] with [fipDetails].
-  /// This API will trigger an OTP to the registered mobile number of the user.
-  ///
-  /// Returns a [FinvuAccountLinkingRequestReference] on success.
-  /// Throws [FinvuException] on failure.
+  Future<List<FinvuFIPInfo>> fipsAllFIPOptions() {
+    return _nativeFinvuManager
+        .fipsAllFIPOptions()
+        .then(
+          (searchResponse) => searchResponse.searchOptions.nonNulls
+              .map(
+                (fipInfo) => FinvuFIPInfo(
+                  fipId: fipInfo.fipId,
+                  productName: fipInfo.productName,
+                  fipFitypes: fipInfo.fipFitypes.nonNulls.toList(),
+                  productDesc: fipInfo.productDesc,
+                  productIconUri: fipInfo.productIconUri,
+                  enabled: fipInfo.enabled,
+                ),
+              )
+              .toList(),
+        )
+        .catchError(
+          (e) => throw FinvuException.from(e),
+          test: _platformExceptionTest,
+        );
+  }
+
+  Future<FinvuFIPDetails> fetchFIPDetails(String fipId) {
+    return _nativeFinvuManager
+        .fetchFIPDetails(fipId)
+        .then(
+          (fipDetails) => FinvuFIPDetails(
+            fipId: fipDetails.fipId,
+            typeIdentifiers: fipDetails.typeIdentifiers.nonNulls
+                .map(
+                  (fipFiTypeIdentifier) => FinvuFIPFiTypeIdentifier(
+                    fiType: fipFiTypeIdentifier.fiType,
+                    identifiers: fipFiTypeIdentifier.identifiers.nonNulls
+                        .map(
+                          (typeIdentifier) => FinvuTypeIdentifier(
+                            type: typeIdentifier.type,
+                            category: typeIdentifier.category,
+                          ),
+                        )
+                        .toList(),
+                  ),
+                )
+                .toList(),
+          ),
+        )
+        .catchError(
+          (e) => throw FinvuException.from(e),
+          test: _platformExceptionTest,
+        );
+  }
+
+  Future<FinvuEntityInfo> getEntityInfo(String entityId, String entityType) {
+    return _nativeFinvuManager
+        .getEntityInfo(entityId, entityType)
+        .then(
+          (entityInfo) => FinvuEntityInfo(
+            entityId: entityInfo.entityId,
+            entityName: entityInfo.entityName,
+            entityIconUri: entityInfo.entityIconUri,
+            entityLogoUri: entityInfo.entityLogoUri,
+            entityLogoWithNameUri: entityInfo.entityLogoWithNameUri,
+          ),
+        )
+        .catchError(
+          (e) => throw FinvuException.from(e),
+          test: _platformExceptionTest,
+        );
+  }
+
   Future<FinvuAccountLinkingRequestReference> linkAccounts(
     FinvuFIPDetails fipDetails,
     List<FinvuDiscoveredAccountInfo> accounts,
