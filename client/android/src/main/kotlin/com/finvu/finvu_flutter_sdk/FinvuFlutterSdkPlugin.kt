@@ -156,19 +156,47 @@ class FinvuFlutterSdkPlugin: FlutterPlugin, NativeFinvuManager {
   }
 
   override fun discoverAccounts(
-    fipDetails: NativeFIPDetails,
+    fipId: String,
     fiTypes: List<String>,
     identifiers: List<NativeTypeIdentifierInfo>,
     callback: (Result<NativeDiscoveredAccountsResponse>) -> Unit
   ) {
-    val finvuFipDetails = getFipDetails(fipDetails)
     val finvuIdentifiers = identifiers.map { TypeIdentifierInfo(category = it.category, type = it.type, value = it.value) }
 
-    FinvuManager.shared.discoverAccounts(finvuFipDetails, fiTypes, finvuIdentifiers) { result ->
+    FinvuManager.shared.discoverAccounts(fipId, fiTypes, finvuIdentifiers) { result ->
       if (result.isFailure) {
         val error = result.exceptionOrNull() as FinvuException
         callback(Result.failure(NativeFinvuError(code = error.code.toString(), message = error.message)))
         return@discoverAccounts
+      }
+
+      val response = result.getOrThrow()
+      val accounts = response.discoveredAccounts.map {
+        NativeDiscoveredAccountInfo(
+          accountType = it.accountType,
+          accountReferenceNumber = it.accountReferenceNumber,
+          maskedAccountNumber = it.maskedAccountNumber,
+          fiType = it.fiType
+        )
+      }
+
+      callback(Result.success(NativeDiscoveredAccountsResponse(accounts)))
+    }
+  }
+
+  override fun discoverAccountsAsync(
+  fipId: String,
+  fiTypes: List<String>,
+  identifiers: List<NativeTypeIdentifierInfo>,
+  callback: (Result<NativeDiscoveredAccountsResponse>) -> Unit
+  ) {
+    val finvuIdentifiers = identifiers.map { TypeIdentifierInfo(category = it.category, type = it.type, value = it.value) }
+
+    FinvuManager.shared.discoverAccountsAsync(fipId, fiTypes, finvuIdentifiers) { result ->
+      if (result.isFailure) {
+        val error = result.exceptionOrNull() as FinvuException
+        callback(Result.failure(NativeFinvuError(code = error.code.toString(), message = error.message)))
+        return@discoverAccountsAsync
       }
 
       val response = result.getOrThrow()

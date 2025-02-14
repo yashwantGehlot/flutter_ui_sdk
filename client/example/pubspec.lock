@@ -71,14 +71,14 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.0.1"
+    version: "0.0.3"
   finvu_flutter_sdk_core:
     dependency: transitive
     description:
       path: "../../core"
       relative: true
     source: path
-    version: "0.0.1"
+    version: "0.0.3"
   flutter:
     dependency: "direct main"
     description: flutter

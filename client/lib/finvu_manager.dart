@@ -182,29 +182,10 @@ class FinvuManager {
   /// Returns a list of [FinvuDiscoveredAccountInfo] on success.
   /// Throws [FinvuException] on failure.
   Future<List<FinvuDiscoveredAccountInfo>> discoverAccounts(
-    FinvuFIPDetails fipDetails,
+    String fipId,
     List<String> fiTypes,
     List<FinvuTypeIdentifierInfo> identifiers,
   ) {
-    final NativeFIPDetails nativeFipDetails = NativeFIPDetails(
-      fipId: fipDetails.fipId,
-      typeIdentifiers: fipDetails.typeIdentifiers
-          .map(
-            (fipFiTypeIdentifier) => NativeFIPFiTypeIdentifier(
-              fiType: fipFiTypeIdentifier.fiType,
-              identifiers: fipFiTypeIdentifier.identifiers
-                  .map(
-                    (typeIdentifier) => NativeTypeIdentifier(
-                      type: typeIdentifier.type,
-                      category: typeIdentifier.category,
-                    ),
-                  )
-                  .toList(),
-            ),
-          )
-          .toList(),
-    );
-
     final List<NativeTypeIdentifierInfo> nativeTypeIdentifierInfo = identifiers
         .map(
           (identifier) => NativeTypeIdentifierInfo(
@@ -216,7 +197,42 @@ class FinvuManager {
         .toList();
 
     return _nativeFinvuManager
-        .discoverAccounts(nativeFipDetails, fiTypes, nativeTypeIdentifierInfo)
+        .discoverAccounts(fipId, fiTypes, nativeTypeIdentifierInfo)
+        .then(
+          (response) => response.accounts.nonNulls
+              .map(
+                (account) => FinvuDiscoveredAccountInfo(
+                  accountType: account.accountType,
+                  accountReferenceNumber: account.accountReferenceNumber,
+                  maskedAccountNumber: account.maskedAccountNumber,
+                  fiType: account.fiType,
+                ),
+              )
+              .toList(),
+        )
+        .catchError(
+          (e) => throw FinvuException.from(e),
+          test: _platformExceptionTest,
+        );
+  }
+
+  Future<List<FinvuDiscoveredAccountInfo>> discoverAccountsAsync(
+    String fipId,
+    List<String> fiTypes,
+    List<FinvuTypeIdentifierInfo> identifiers,
+  ) {
+    final List<NativeTypeIdentifierInfo> nativeTypeIdentifierInfo = identifiers
+        .map(
+          (identifier) => NativeTypeIdentifierInfo(
+            category: identifier.category,
+            type: identifier.type,
+            value: identifier.value,
+          ),
+        )
+        .toList();
+
+    return _nativeFinvuManager
+        .discoverAccountsAsync(fipId, fiTypes, nativeTypeIdentifierInfo)
         .then(
           (response) => response.accounts.nonNulls
               .map(

@@ -1045,7 +1045,8 @@ interface NativeFinvuManager {
   fun hasSession(): Boolean
   fun loginWithUsernameOrMobileNumberAndConsentHandle(username: String?, mobileNumber: String?, consentHandleId: String, callback: (Result<NativeLoginOtpReference>) -> Unit)
   fun verifyLoginOtp(otp: String, otpReference: String, callback: (Result<NativeHandleInfo>) -> Unit)
-  fun discoverAccounts(fipDetails: NativeFIPDetails, fiTypes: List<String>, identifiers: List<NativeTypeIdentifierInfo>, callback: (Result<NativeDiscoveredAccountsResponse>) -> Unit)
+  fun discoverAccountsAsync(fipId: String, fiTypes: List<String>, identifiers: List<NativeTypeIdentifierInfo>, callback: (Result<NativeDiscoveredAccountsResponse>) -> Unit)
+  fun discoverAccounts(fipId: String, fiTypes: List<String>, identifiers: List<NativeTypeIdentifierInfo>, callback: (Result<NativeDiscoveredAccountsResponse>) -> Unit)
   fun linkAccounts(fipDetails: NativeFIPDetails, accounts: List<NativeDiscoveredAccountInfo>, callback: (Result<NativeAccountLinkingRequestReference>) -> Unit)
   fun confirmAccountLinking(requestReference: NativeAccountLinkingRequestReference, otp: String, callback: (Result<NativeConfirmAccountLinkingInfo>) -> Unit)
   fun fetchLinkedAccounts(callback: (Result<NativeLinkedAccountsResponse>) -> Unit)
@@ -1198,14 +1199,36 @@ interface NativeFinvuManager {
         }
       }
       run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.finvu_flutter_sdk.NativeFinvuManager.discoverAccountsAsync", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val fipIdArg = args[0] as String
+            val fiTypesArg = args[1] as List<String>
+            val identifiersArg = args[2] as List<NativeTypeIdentifierInfo>
+            api.discoverAccountsAsync(fipIdArg, fiTypesArg, identifiersArg) { result: Result<NativeDiscoveredAccountsResponse> ->
+              val error = result.exceptionOrNull()
+              if (error != null) {
+                reply.reply(wrapError(error))
+              } else {
+                val data = result.getOrNull()
+                reply.reply(wrapResult(data))
+              }
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
         val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.finvu_flutter_sdk.NativeFinvuManager.discoverAccounts", codec)
         if (api != null) {
           channel.setMessageHandler { message, reply ->
             val args = message as List<Any?>
-            val fipDetailsArg = args[0] as NativeFIPDetails
+            val fipIdArg = args[0] as String
             val fiTypesArg = args[1] as List<String>
             val identifiersArg = args[2] as List<NativeTypeIdentifierInfo>
-            api.discoverAccounts(fipDetailsArg, fiTypesArg, identifiersArg) { result: Result<NativeDiscoveredAccountsResponse> ->
+            api.discoverAccounts(fipIdArg, fiTypesArg, identifiersArg) { result: Result<NativeDiscoveredAccountsResponse> ->
               val error = result.exceptionOrNull()
               if (error != null) {
                 reply.reply(wrapError(error))

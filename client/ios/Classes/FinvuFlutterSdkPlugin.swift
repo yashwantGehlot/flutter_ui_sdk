@@ -69,18 +69,12 @@ public class FinvuFlutterSdkPlugin: NSObject, FlutterPlugin, NativeFinvuManager 
         }
     }
     
-    func discoverAccounts(fipDetails nativeFipDetails: NativeFIPDetails, fiTypes: [String], identifiers nativeIdentifiers: [NativeTypeIdentifierInfo], completion: @escaping (Result<NativeDiscoveredAccountsResponse, Error>) -> Void) {
-        let fipDetails = FIPDetails(fipId: nativeFipDetails.fipId, typeIdenifiers: nativeFipDetails.typeIdentifiers.map({ nativeFIPFiTypeIdentifier in
-            FIPFiTypeIdentifier(fiType: nativeFIPFiTypeIdentifier!.fiType, identifiers: nativeFIPFiTypeIdentifier!.identifiers.map({ nativeTypeIdentifier in
-                TypeIdentifier(category: nativeTypeIdentifier!.category, type: nativeTypeIdentifier!.type)
-            }))
-        }))
-        
-        let identifiers = nativeIdentifiers.map { nativeTypeIdentifierInfo in
+    func discoverAccounts(fipId: String, fiTypes: [String], identifiers : [NativeTypeIdentifierInfo], completion: @escaping (Result<NativeDiscoveredAccountsResponse, Error>) -> Void) {
+        let identifiers = identifiers.map { nativeTypeIdentifierInfo in
             TypeIdentifierInfo(category: nativeTypeIdentifierInfo.category, type: nativeTypeIdentifierInfo.type, value: nativeTypeIdentifierInfo.value)
         }
         
-        FinvuManager.shared.discoverAccounts(fipDetails: fipDetails, fiTypes: fiTypes, identifiers: identifiers) { response, error in
+        FinvuManager.shared.discoverAccounts(fipId: fipId, fiTypes: fiTypes, identifiers: identifiers) { response, error in
             if (error != nil) {
                 completion(.failure(FlutterError(code: "\(error!.code)", message: error?.localizedDescription, details: nil)))
                 return
@@ -92,7 +86,25 @@ public class FinvuFlutterSdkPlugin: NSObject, FlutterPlugin, NativeFinvuManager 
             completion(.success(NativeDiscoveredAccountsResponse(accounts: accounts)))
         }
     }
-    
+
+    func discoverAccountsAsync(fipId: String, fiTypes: [String], identifiers: [NativeTypeIdentifierInfo], completion: @escaping         (Result<NativeDiscoveredAccountsResponse, Error>) -> Void) {
+        let identifiers = identifiers.map { nativeTypeIdentifierInfo in
+                TypeIdentifierInfo(category: nativeTypeIdentifierInfo.category, type: nativeTypeIdentifierInfo.type, value: nativeTypeIdentifierInfo.value)
+        }
+            
+        FinvuManager.shared.discoverAccounts(fipId: fipId, fiTypes: fiTypes, identifiers: identifiers) { response, error in
+            if (error != nil) {
+                completion(.failure(FlutterError(code: "\(error!.code)", message: error?.localizedDescription, details: nil)))
+                return
+            }
+            
+            let accounts = response!.accounts.map { account in
+                NativeDiscoveredAccountInfo(accountType: account.accountType, accountReferenceNumber: account.accountReferenceNumber, maskedAccountNumber: account.maskedAccountNumber, fiType: account.fiType)
+            }
+            completion(.success(NativeDiscoveredAccountsResponse(accounts: accounts)))
+        }
+    }
+
     func linkAccounts(fipDetails: NativeFIPDetails, accounts: [NativeDiscoveredAccountInfo], completion: @escaping (Result<NativeAccountLinkingRequestReference, Error>) -> Void) {
         let fipDetails = FIPDetails(fipId: fipDetails.fipId, typeIdenifiers: fipDetails.typeIdentifiers.map({ nativeFIPFiTypeIdentifier in
             FIPFiTypeIdentifier(fiType: nativeFIPFiTypeIdentifier!.fiType, identifiers: nativeFIPFiTypeIdentifier!.identifiers.map({ nativeTypeIdentifier in
@@ -365,6 +377,7 @@ public class FinvuFlutterSdkPlugin: NSObject, FlutterPlugin, NativeFinvuManager 
                 fiTypes: consentRequestDetail.fiTypes,
                 statusLastUpdateTimestamp: self.getDateOrNil(date: consentRequestDetail.statusLastUpdateTimestamp)
             )
+            completion(.success(nativeConsentRequestDetailInfo))
         }
     }
     

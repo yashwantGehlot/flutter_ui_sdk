@@ -165,6 +165,7 @@ class NativeConsentRequestDetailInfo {
   NativeConsentRequestDetailInfo({
     required this.consentHandleId,
     required this.consentId,
+    required this.statusLastUpdateTimestamp,
     required this.financialInformationUser,
     required this.consentPurposeInfo,
     required this.consentDisplayDescriptions,
@@ -185,6 +186,7 @@ class NativeConsentRequestDetailInfo {
   NativeConsentDataFrequency consentDataFrequency;
   NativeConsentDataLifePeriod consentDataLifePeriod;
   List<String?>? fiTypes;
+  String? statusLastUpdateTimestamp;
 }
 
 class NativeDateTimeRange {
@@ -397,8 +399,15 @@ abstract class NativeFinvuManager {
   );
 
   @async
+  NativeDiscoveredAccountsResponse discoverAccountsAsync(
+    String fipId,
+    List<String> fiTypes,
+    List<NativeTypeIdentifierInfo> identifiers,
+  );
+
+  @async
   NativeDiscoveredAccountsResponse discoverAccounts(
-    NativeFIPDetails fipDetails,
+    String fipId,
     List<String> fiTypes,
     List<NativeTypeIdentifierInfo> identifiers,
   );
