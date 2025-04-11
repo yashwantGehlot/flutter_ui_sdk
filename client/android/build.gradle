@@ -29,9 +29,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    if (project.android.hasProperty("namespace")) {
-        namespace 'com.finvu.finvu_flutter_sdk'
-    }
+    namespace 'com.finvu.finvu_flutter_sdk'
 
     compileSdkVersion 33
 
