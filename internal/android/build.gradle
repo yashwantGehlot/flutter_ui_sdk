@@ -1,0 +1,81 @@
+group 'com.example.finvu_flutter_sdk_internal'
+version '1.0-SNAPSHOT'
+
+buildscript {
+    ext.kotlin_version = '1.7.10'
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.3.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+
+        // FIXME: Following needs to be added only for debug version since we want to build everything from local files. For release version we should remove this.
+        flatDir {
+            dirs "../../../finvu_android_sdk/core/build/outputs/aar/", "../../../finvu_android_sdk/internal/build/outputs/aar/"
+        }
+    }
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+    if (project.android.hasProperty("namespace")) {
+        namespace 'com.example.finvu_flutter_sdk_internal'
+    }
+
+    compileSdk 34
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+        test.java.srcDirs += 'src/test/kotlin'
+    }
+
+    defaultConfig {
+        minSdkVersion 24
+    }
+
+    dependencies {
+        testImplementation 'org.jetbrains.kotlin:kotlin-test'
+        testImplementation 'org.mockito:mockito-core:5.0.0'
+
+        // FIXME: Following should be only for debug version since we want to build everything from local files. For release version this dependency should come via Maven
+        debugImplementation(name: "core-debug", ext: "aar")
+        debugImplementation(name: "internal-debug", ext: "aar")
+
+        // TODO: Add release implementation dependency via public distribution
+        releaseImplementation(name: "core-release", ext: "aar")
+        releaseImplementation(name: "internal-release", ext: "aar")
+    }
+
+    testOptions {
+        unitTests.all {
+            useJUnitPlatform()
+
+            testLogging {
+               events "passed", "skipped", "failed", "standardOut", "standardError"
+               outputs.upToDateWhen {false}
+               showStandardStreams = true
+            }
+        }
+    }
+}

@@ -1,0 +1,16 @@
+{
+    "apiUrl": "wss://wsslive.finvu.in/api",
+    "certificatePins": [
+        "sbwmzb+GDVnfeIXamhbaeFHbFzEi83xGT3EKHt5QGbU=",
+        "NYbU7PBwV4y9J67c4guWTki8FJ+uudrXL0a4V4aRcrg=",
+        "6ItJWWXcuop8ZWO0C/FslqC0mbIhpnCPCerdYkJkD9o=",
+        "OdSlmQD9NWJh4EbcOHBxkhygPwNSwA9Q91eounfbcoE="
+    ],
+    "packageName": "com.finvu",
+    "android": {
+        "sha256": "04:51:EC:51:12:78:67:19:C0:50:8F:BA:52:83:44:6B:6A:89:0A:78:7D:79:FD:C2:06:7C:B5:2B:B8:C1:D2:F6"
+    },
+    "ios" : {
+        "teamId": "5YLV7P7G5Y"
+    }
+}

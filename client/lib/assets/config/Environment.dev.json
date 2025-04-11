@@ -1,0 +1,14 @@
+{
+    "apiUrl": "wss://webvwdev.finvu.in/api",
+    "certificatePins": [
+        "R6wXZnQsKKyg56qFKQNytvygyr/o4Mkq1VXL5LenBYI=",
+        "bdrBhpj38ffhxpubzkINl0rG+UyossdhcBYj+Zx2fcc="
+    ],
+    "packageName": "com.finvu.development",
+    "android": {
+        "sha256": "95:87:AF:08:A8:66:86:34:00:F3:47:E7:0E:BE:3F:C3:2C:E4:FA:6F:52:FC:CF:97:93:37:53:81:75:CA:92:15"
+    },
+    "ios" : {
+        "teamId": "5YLV7P7G5Y"
+    }
+}
