@@ -4,7 +4,7 @@ import 'package:finvu_flutter_sdk/features/home/accounts_list_page.dart';
 import 'package:finvu_flutter_sdk/features/home/bloc/home_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:finvu_flutter_sdk/l10n/app_localizations.dart';
 
 class HeaderWithInfoCards extends StatelessWidget {
   const HeaderWithInfoCards({super.key});

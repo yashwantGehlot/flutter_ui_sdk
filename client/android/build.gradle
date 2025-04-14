@@ -18,9 +18,11 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-
+        
         flatDir {
-            dirs "../../../finvu_android_sdk/core/build/outputs/aar/", "../../../finvu_android_sdk/client/build/outputs/aar/"
+            dirs "libs", 
+                 "../../../finvu_android_sdk/core/build/outputs/aar/", 
+                 "../../../finvu_android_sdk/client/build/outputs/aar/"
         }
     }
 }
@@ -29,7 +31,9 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    namespace 'com.finvu.finvu_flutter_sdk'
+    if (project.android.hasProperty("namespace")) {
+        namespace 'com.finvu.finvu_flutter_sdk'
+    }
 
     compileSdkVersion 33
 
@@ -55,8 +59,8 @@ android {
         testImplementation 'org.jetbrains.kotlin:kotlin-test'
         testImplementation 'org.mockito:mockito-core:5.0.0'
 
-        debugImplementation(name: "core-debug", ext: "aar")
-        debugImplementation(name: "client-debug", ext: "aar")
+        implementation("com.finvu.android:core-sdk:1.0.3")
+        implementation("com.finvu.android:client-sdk:1.0.3")
         debugImplementation("com.squareup.okhttp3:okhttp-urlconnection:4.9.1")
 
         // TODO: Add release implementation dependency via public distribution
@@ -77,3 +81,28 @@ android {
         }
     }
 }
+
+subprojects {
+    afterEvaluate { project ->
+        if (project.hasProperty('android')) {
+            project.android {
+                if (project.group.toString().startsWith("appmire.be")) {
+                    if (namespace == null) {
+                        namespace 'appmire.be.flutterjailbreakdetection'
+                    }
+                }
+                if (project.group.toString().startsWith("com.crazecoder")) {
+                    if (namespace == null) {
+                        namespace "com.crazecoder.openfile"
+                    }
+                }
+                else{
+                    if (namespace == null) {
+                        namespace project.group
+                    }
+                }
+            }
+        }
+    }
+}
+

@@ -5,7 +5,7 @@ import 'package:finvu_flutter_sdk/common/widgets/finvu_fip_icon.dart';
 import 'package:finvu_flutter_sdk/common/widgets/finvu_page_header.dart';
 import 'package:finvu_flutter_sdk_core/finvu_fip_info.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:finvu_flutter_sdk/l10n/app_localizations.dart';
 
 class NoAccountsFoundPage extends StatelessWidget {
   final String mobileNumber;

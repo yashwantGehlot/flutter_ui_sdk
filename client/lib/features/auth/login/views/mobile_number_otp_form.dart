@@ -12,7 +12,7 @@ import 'package:finvu_flutter_sdk/features/main/main_page.dart';
 import 'package:finvu_flutter_sdk/common/utils/finvu_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:finvu_flutter_sdk/l10n/app_localizations.dart';
 
 class MobileNumberOTPForm extends StatefulWidget {
   const MobileNumberOTPForm({super.key});
@@ -277,20 +277,9 @@ class _SubmitButton extends StatelessWidget {
                               .securityPasscodeLockErrorDescription,
                           true);
                     } else {
-                      bool isCompromised =
-                          await SecurityUtils.isDeviceSecurityCompromised();
-                      if (isCompromised) {
-                        _showSecureErrorDialog(
-                            context,
-                            AppLocalizations.of(currentContext)!.securityError,
-                            AppLocalizations.of(currentContext)!
-                                .securityCompromisedErrorDescription,
-                            false);
-                      } else {
-                        currentContext
-                            .read<LoginBloc>()
-                            .add(const LoginAAHandlePasscodeSubmitted());
-                      }
+                      currentContext
+                          .read<LoginBloc>()
+                          .add(const LoginAAHandlePasscodeSubmitted());
                     }
                   } catch (error) {
                     debugPrint('Error checking device security: $error');

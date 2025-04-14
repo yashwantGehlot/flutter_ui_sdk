@@ -8,7 +8,7 @@ import 'package:finvu_flutter_sdk/features/consents/bloc/consent_bloc.dart';
 import 'package:finvu_flutter_sdk/features/consents/consent_details_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:finvu_flutter_sdk/l10n/app_localizations.dart';
 
 class LinkedAccountConsentCards extends StatefulWidget {
   const LinkedAccountConsentCards(

@@ -6,11 +6,10 @@ import 'package:finvu_flutter_sdk/common/widgets/finvu_auth_header.dart';
 import 'package:finvu_flutter_sdk/features/auth/login/bloc/login_bloc.dart';
 import 'package:finvu_flutter_sdk/features/auth/login/views/aa_handle_passcode_form.dart';
 import 'package:finvu_flutter_sdk/features/auth/login/views/mobile_number_otp_form.dart';
-import 'package:finvu_flutter_sdk/features/auth/registration/registration_page.dart';
 import 'package:finvu_flutter_sdk/common/utils/finvu_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:finvu_flutter_sdk/l10n/app_localizations.dart';
 
 enum LoginType { aaHandlePasscode, mobileNumberOTP }
 
@@ -100,12 +99,7 @@ class _LoginPageState extends State<LoginPage> {
           shape: MaterialStatePropertyAll(RoundedRectangleBorder()),
           backgroundColor: MaterialStatePropertyAll(FinvuColors.lightBlue),
           foregroundColor: MaterialStatePropertyAll(FinvuColors.blue)),
-      onPressed: () => {
-        Navigator.push(
-          context,
-          RegistrationPage.route(),
-        )
-      },
+      onPressed: () => {},
       child: Text(AppLocalizations.of(context)!.doNotHaveFinvuAccountRegister),
     );
   }

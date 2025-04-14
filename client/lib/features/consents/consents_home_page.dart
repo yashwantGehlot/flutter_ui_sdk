@@ -6,7 +6,7 @@ import 'package:finvu_flutter_sdk/features/consents/views/consent_cards.dart';
 import 'package:finvu_flutter_sdk/features/consents/views/header_with_consent_stats_cards.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:finvu_flutter_sdk/l10n/app_localizations.dart';
 
 class ConsentsHomePage extends BasePage {
   const ConsentsHomePage({super.key});

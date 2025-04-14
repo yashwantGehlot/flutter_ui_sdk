@@ -1,38 +1,13 @@
-import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 
 class RemoteConfigService {
-  final _remoteConfig = FirebaseRemoteConfig.instance;
+  final Map<String, dynamic> _data;
 
-  RemoteConfigService._privateConstructor();
+  RemoteConfigService() : _data = _defaultData;
 
-  static final RemoteConfigService _instance =
-      RemoteConfigService._privateConstructor();
+  RemoteConfigService._withData(this._data);
 
-  factory RemoteConfigService() {
-    return _instance;
-  }
-
-  Future<void> initialize() async {
-    await _remoteConfig.setConfigSettings(RemoteConfigSettings(
-      fetchTimeout: const Duration(minutes: 1),
-      minimumFetchInterval: const Duration(hours: 1),
-    ));
-
-    await _remoteConfig.setDefaults(defaults);
-
-    // Do not wait for fetch and activate for 2 reasons:
-    // 1. Slower app start time
-    // 2. In case of no network, fetch and activate will throw an exception
-    //    and white screen will be shown to the user
-    try {
-      _remoteConfig.fetchAndActivate();
-    } catch (e) {
-      debugPrint("failed to fetchAndActive remote config exception=$e");
-    }
-  }
-
-  static const defaults = <String, dynamic>{
+  static final Map<String, dynamic> _defaultData = {
     'testConfigKey': 0,
     'minimumSupportedVersion': "2.1.0",
     'androidStoreLink':
@@ -56,59 +31,51 @@ class RemoteConfigService {
     "selfConsentPurposeType": "ONE_TIME_CONSENT"
   };
 
-  int get testSettings => _remoteConfig.getInt('testConfigKey');
+  int getInt(String key) => _data[key] as int;
+  String getString(String key) => _data[key] as String;
+  bool getBool(String key) => _data[key] as bool;
 
-  String get minimumSupportedVersion =>
-      _remoteConfig.getString('minimumSupportedVersion');
+  int get testSettings => getInt('testConfigKey');
 
-  String get androidStoreLink => _remoteConfig.getString('androidStoreLink');
+  String get minimumSupportedVersion => getString('minimumSupportedVersion');
 
-  String get iosStoreLink => _remoteConfig.getString('iosStoreLink');
+  String get androidStoreLink => getString('androidStoreLink');
+
+  String get iosStoreLink => getString('iosStoreLink');
 
   int get accountDataFetchPollIntervalInSeconds =>
-      _remoteConfig.getInt('accountDataFetchPollIntervalInSeconds');
+      getInt('accountDataFetchPollIntervalInSeconds');
 
   int get accountDataFetchPollTimeoutInSeconds =>
-      _remoteConfig.getInt('accountDataFetchPollTimeoutInSeconds');
+      getInt('accountDataFetchPollTimeoutInSeconds');
 
   bool get isAccountDataFeatureEnabled =>
-      _remoteConfig.getBool('isAccountDataFeatureEnabled');
+      getBool('isAccountDataFeatureEnabled');
 
-  int get selfConsentExpireTimeInDays =>
-      _remoteConfig.getInt('selfConsentExpireTimeInDays');
+  int get selfConsentExpireTimeInDays => getInt('selfConsentExpireTimeInDays');
 
-  String get selfConsentMode => _remoteConfig.getString('selfConsentMode');
+  String get selfConsentMode => getString('selfConsentMode');
 
-  String get selfConsentFetchType =>
-      _remoteConfig.getString('selfConsentFetchType');
+  String get selfConsentFetchType => getString('selfConsentFetchType');
 
-  String get selfConsentFrequencyUnit =>
-      _remoteConfig.getString('selfConsentFrequencyUnit');
+  String get selfConsentFrequencyUnit => getString('selfConsentFrequencyUnit');
 
-  int get selfConsentFrequencyValue =>
-      _remoteConfig.getInt('selfConsentFrequencyValue');
+  int get selfConsentFrequencyValue => getInt('selfConsentFrequencyValue');
 
-  String get selfConsentDataLifeUnit =>
-      _remoteConfig.getString('selfConsentDataLifeUnit');
+  String get selfConsentDataLifeUnit => getString('selfConsentDataLifeUnit');
 
-  int get selfConsentDataLifeValue =>
-      _remoteConfig.getInt('selfConsentDataLifeValue');
+  int get selfConsentDataLifeValue => getInt('selfConsentDataLifeValue');
 
-  bool get deviceBindingEnabled =>
-      _remoteConfig.getBool('deviceBindingEnabled');
+  bool get deviceBindingEnabled => getBool('deviceBindingEnabled');
 
-  bool get deviceBindingAPIEnabled =>
-      _remoteConfig.getBool('deviceBindingAPIEnabled');
+  bool get deviceBindingAPIEnabled => getBool('deviceBindingAPIEnabled');
 
-  int get totpGenerationInterval =>
-      _remoteConfig.getInt('totpGenerationInterval');
+  int get totpGenerationInterval => getInt('totpGenerationInterval');
 
   int get deviceBindingOtpTimerInterval =>
-      _remoteConfig.getInt('deviceBindingOtpTimerInterval');
+      getInt('deviceBindingOtpTimerInterval');
 
-  int get accountLinkingOtpMaxLength =>
-      _remoteConfig.getInt('accountLinkingOtpMaxLength');
+  int get accountLinkingOtpMaxLength => getInt('accountLinkingOtpMaxLength');
 
-  String get selfConsentPurposeType =>
-      _remoteConfig.getString('selfConsentPurposeType');
+  String get selfConsentPurposeType => getString('selfConsentPurposeType');
 }

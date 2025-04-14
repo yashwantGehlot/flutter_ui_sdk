@@ -14,8 +14,6 @@ dependencies:
   plugin_platform_interface: ^2.0.2
   finvu_flutter_sdk_core:
     path: ../core
-  finvu_flutter_sdk_internal:
-    path: ../internal
   shared_preferences: ^2.0.13
   cupertino_icons: ^1.0.2
   flutter_bloc: ^8.1.3
@@ -24,21 +22,15 @@ dependencies:
   url_launcher: ^6.2.2
   collection: ^1.18.0
   dotted_border: ^2.1.0
-  firebase_remote_config: ^4.0.2
-  flutter_jailbreak_detection: ^1.10.0
   app_settings: ^5.1.1
   file_picker: ^8.0.0+1
   path_provider: ^2.1.2
   open_file: ^3.3.2
   package_info_plus: ^8.1.0
   screen_protector: ^1.4.2
-  firebase_crashlytics: ^3.5.3
-  firebase_analytics: ^10.10.3
-  firebase_core: ^2.31.0
   xml: ^6.5.0
   otpless_flutter: 2.2.0
   uuid: ^4.5.1
-  flutter_secure_storage: ^4.2.1
   otp: ^3.1.4
 
 dev_dependencies:

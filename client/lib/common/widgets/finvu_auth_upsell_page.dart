@@ -1,7 +1,7 @@
 import 'package:finvu_flutter_sdk/common/utils/finvu_colors.dart';
 import 'package:finvu_flutter_sdk/common/utils/ui_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:finvu_flutter_sdk/l10n/app_localizations.dart';
 
 class FinvuAuthUpsellPage extends StatelessWidget {
   const FinvuAuthUpsellPage({super.key});

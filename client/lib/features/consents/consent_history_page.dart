@@ -6,7 +6,7 @@ import 'package:finvu_flutter_sdk/common/widgets/base_page.dart';
 import 'package:finvu_flutter_sdk/common/widgets/finvu_page_header.dart';
 import 'package:finvu_flutter_sdk_core/finvu_consent_history.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:finvu_flutter_sdk/l10n/app_localizations.dart';
 
 class ConsentHistoryPage extends BasePage {
   const ConsentHistoryPage({

@@ -2,7 +2,7 @@ import 'package:finvu_flutter_sdk/common/utils/remote_config_service.dart';
 import 'package:otp/otp.dart';
 
 class TOTPGenerator {
-  final remoteConfig = RemoteConfigService();
+//  final remoteConfig = RemoteConfigService();
 
   String generateTOTP(String secret) {
     return OTP
@@ -10,7 +10,7 @@ class TOTPGenerator {
           secret,
           DateTime.now().millisecondsSinceEpoch,
           length: 6,
-          interval: remoteConfig.totpGenerationInterval,
+          interval: 180,
           algorithm: Algorithm.SHA1,
           isGoogle: true,
         )

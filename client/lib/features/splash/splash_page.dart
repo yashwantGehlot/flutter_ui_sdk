@@ -6,7 +6,7 @@ import 'package:finvu_flutter_sdk/features/auth/login/login_page.dart';
 import 'package:finvu_flutter_sdk/features/splash/bloc/splash_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:finvu_flutter_sdk/l10n/app_localizations.dart';
 import 'package:otpless_flutter/otpless_flutter.dart';
 
 class SplashPage extends BasePage {
@@ -42,14 +42,7 @@ class _SplashPageState extends BasePageState<SplashPage> {
         create: (_) => SplashBloc()..add(SplashLoading()),
         child: BlocListener<SplashBloc, SplashState>(
           listener: (context, state) async {
-            bool shouldForceUpdateApp =
-                await UpdateUtils.shouldForceUpdateApp();
-
             if (!context.mounted) {
-              return;
-            }
-            if (shouldForceUpdateApp) {
-              _showForceUpdateDialog(context);
               return;
             }
             if (state is SplashNavigateLogin) {

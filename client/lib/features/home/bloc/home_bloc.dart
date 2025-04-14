@@ -5,7 +5,6 @@ import 'package:finvu_flutter_sdk/common/models/linked_account_with_fip.dart';
 import 'package:finvu_flutter_sdk/finvu_manager.dart';
 import 'package:finvu_flutter_sdk_core/finvu_exception.dart';
 import 'package:finvu_flutter_sdk_core/finvu_fip_info.dart';
-import 'package:finvu_flutter_sdk_internal/finvu_manager_internal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -14,7 +13,6 @@ part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final FinvuManager _finvuManager = FinvuManager();
-  final FinvuManagerInternal _finvuManagerInternal = FinvuManagerInternal();
 
   HomeBloc() : super(const HomeState()) {
     on<HomeRefresh>(_onHomeRefresh);

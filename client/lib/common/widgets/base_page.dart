@@ -1,9 +1,8 @@
-import 'package:finvu_flutter_sdk/common/utils/analytics_utils.dart';
 import 'package:finvu_flutter_sdk/common/widgets/finvu_dialog.dart';
 import 'package:finvu_flutter_sdk/common/widgets/named_route.dart';
 import 'package:finvu_flutter_sdk/features/splash/splash_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:finvu_flutter_sdk/l10n/app_localizations.dart';
 
 abstract class BasePage extends StatefulWidget implements NamedRoute {
   const BasePage({super.key});
@@ -13,7 +12,6 @@ abstract class BasePageState<Page extends BasePage> extends State<Page> {
   @override
   void initState() {
     super.initState();
-    FinvuAnalytics.logScreenView(widget.routeName());
   }
 
   void handleSessionExpired(BuildContext context) {

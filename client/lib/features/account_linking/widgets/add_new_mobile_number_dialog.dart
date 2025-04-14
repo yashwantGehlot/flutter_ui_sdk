@@ -1,6 +1,6 @@
 import 'package:finvu_flutter_sdk/common/widgets/finvu_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:finvu_flutter_sdk/l10n/app_localizations.dart';
 
 class AddNewMobileNumberDialog extends StatelessWidget {
   final Function(String) onDialogButtonPressed;

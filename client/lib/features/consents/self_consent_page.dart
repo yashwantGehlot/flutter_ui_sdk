@@ -10,13 +10,12 @@ import 'package:finvu_flutter_sdk/common/utils/ui_utils.dart';
 import 'package:finvu_flutter_sdk/common/widgets/base_page.dart';
 import 'package:finvu_flutter_sdk/common/widgets/finvu_fip_icon.dart';
 import 'package:finvu_flutter_sdk/common/widgets/finvu_page_header.dart';
-import 'package:finvu_flutter_sdk/features/account_data_fetch/account_data_page.dart';
 import 'package:finvu_flutter_sdk/features/accounts/account_utils.dart';
 import 'package:finvu_flutter_sdk/features/consents/bloc/consent_bloc.dart';
 import 'package:finvu_flutter_sdk_core/finvu_consent_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:finvu_flutter_sdk/l10n/app_localizations.dart';
 
 enum SelfConsentFlowOrigin {
   accountLinking,
@@ -121,7 +120,7 @@ class _SelfConsentPageState extends BasePageState<SelfConsentPage> {
               account.linkReferenceNumber,
             );
 
-            _goToAccountDataPage(context, activeSelfConsent!, account);
+//            _goToAccountDataPage(context, activeSelfConsent!, account);
           } else if (state.status == ConsentStatus.error) {
             if (ErrorUtils.hasSessionExpired(state.error)) {
               handleSessionExpired(context);
@@ -595,14 +594,14 @@ class _SelfConsentPageState extends BasePageState<SelfConsentPage> {
     );
   }
 
-  void _goToAccountDataPage(final BuildContext context,
-      final ConsentDetails activeSelfConsent, LinkedAccountInfo account) async {
-    await Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) =>
-            AccountDataPage(consent: activeSelfConsent, account: account),
-      ),
-    );
-  }
+  // void _goToAccountDataPage(final BuildContext context,
+  //     final ConsentDetails activeSelfConsent, LinkedAccountInfo account) async {
+  //   await Navigator.pushReplacement(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) =>
+  //           AccountDataPage(consent: activeSelfConsent, account: account),
+  //     ),
+  //   );
+  // }
 }

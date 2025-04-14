@@ -7,10 +7,8 @@ import 'package:finvu_flutter_sdk/common/widgets/base_page.dart';
 import 'package:finvu_flutter_sdk/features/accounts/accounts_page.dart';
 import 'package:finvu_flutter_sdk/features/consents/consents_home_page.dart';
 import 'package:finvu_flutter_sdk/features/home/home_page.dart';
-import 'package:finvu_flutter_sdk/features/profile/profile_page.dart';
-import 'package:finvu_flutter_sdk/features/notification/views/notifications_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:finvu_flutter_sdk/l10n/app_localizations.dart';
 
 class MainPage extends BasePage {
   final String handleId;
@@ -64,34 +62,7 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: UIUtils.getFinvuAppBar(
-        leading: IconButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const ProfilePage(),
-              ),
-            );
-          },
-          icon: const Icon(Icons.person_outline),
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => NotificationsPage(
-                    onNavigateToItem: _onSwitchActiveTab,
-                  ),
-                ),
-              );
-            },
-            icon: const Icon(Icons.notifications_none_outlined),
-          )
-        ],
-      ),
+      appBar: UIUtils.getFinvuAppBar(),
       backgroundColor: FinvuColors.lightBlue,
       body: _getWidget(_selectedItem),
       bottomNavigationBar: BottomNavigationBar(

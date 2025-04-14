@@ -11,14 +11,13 @@ import 'package:finvu_flutter_sdk/common/widgets/passcode_input.dart';
 import 'package:finvu_flutter_sdk/features/account_linking/widgets/add_new_mobile_number_dialog.dart';
 import 'package:finvu_flutter_sdk/features/auth/login/bloc/login_bloc.dart';
 import 'package:finvu_flutter_sdk/features/auth/login/widgets/otp_input_dialog_for_verify.dart';
-import 'package:finvu_flutter_sdk/features/auth/recovery/recovery_page.dart';
 import 'package:finvu_flutter_sdk/features/deviceBinding/device_binding_page.dart';
 import 'package:finvu_flutter_sdk/features/main/main_page.dart';
 import 'package:finvu_flutter_sdk/common/utils/finvu_colors.dart';
 import 'package:finvu_flutter_sdk/popup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:finvu_flutter_sdk/l10n/app_localizations.dart';
 
 class AAHandlePasscodeForm extends StatefulWidget {
   const AAHandlePasscodeForm({super.key});
@@ -42,9 +41,9 @@ class _AAHandlePasscodeFormState extends State<AAHandlePasscodeForm> {
         } else if (state.status == LoginStatus.isSendingOtp) {
           _showOtpInputDialog(context, state.mobileNumber);
         } else if (state.status == LoginStatus.needAuthentication) {
-          Navigator.of(context).push(
-            Devicebindingpage.route(state.mobileNumber, state.aaHandle),
-          );
+          // Navigator.of(context).push(
+          //   Devicebindingpage.route(state.mobileNumber, state.aaHandle),
+          // );
         } else if (state.status == LoginStatus.mobileNumberVerified) {
           context.read<LoginBloc>().add(const LoginAAHandlePasscodeSubmitted());
         } else if (state.status == LoginStatus.invalidOtp) {
@@ -135,10 +134,11 @@ class _AAHandlePasscodeFormState extends State<AAHandlePasscodeForm> {
           style: TextButton.styleFrom(
               textStyle: const TextStyle(fontWeight: FontWeight.bold),
               foregroundColor: FinvuColors.grey81858F),
-          onPressed: () => Navigator.push(
-            context,
-            RecoveryPage.route(),
-          ),
+          onPressed: () {},
+          // onPressed: () => Navigator.push(
+          //   context,
+          //   RecoveryPage.route(),
+          // ),
           child: Text(AppLocalizations.of(context)!.forgotPinOrAAHandle),
         ));
   }

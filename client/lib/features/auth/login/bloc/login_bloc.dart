@@ -7,7 +7,6 @@ import 'package:finvu_flutter_sdk/config/finvu_app_config.dart';
 import 'package:finvu_flutter_sdk/finvu_config.dart';
 import 'package:finvu_flutter_sdk/finvu_manager.dart';
 import 'package:finvu_flutter_sdk_core/finvu_exception.dart';
-import 'package:finvu_flutter_sdk_internal/finvu_manager_internal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 part 'login_event.dart';
@@ -15,8 +14,7 @@ part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final FinvuManager _finvuManager = FinvuManager();
-  final FinvuManagerInternal _finvuManagerInternal = FinvuManagerInternal();
-  final storage = SecureStorageUtil();
+//  final storage = SecureStorageUtil();
   final remoteConfig = RemoteConfigService();
 
   LoginBloc() : super(const LoginState()) {
@@ -82,41 +80,40 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     emit(state.copyWith(status: LoginStatus.isAuthenticatingUsernamePasscode));
     try {
       if (remoteConfig.deviceBindingEnabled) {
-        final secret = await storage.read(storage.SECRET_KEY);
-        final deviceID = await storage.read(storage.DEVICE_ID_KEY);
-        String? totp;
-        if (secret != null) {
-          totp = TOTPGenerator().generateTOTP(secret);
-        }
-        final loginResponse =
-            await _finvuManagerInternal.loginWithUsernameAndPasscode(
-          state.aaHandle,
-          state.passcode,
-          totp,
-          deviceID,
-        );
+        // final secret = await storage.read(storage.SECRET_KEY);
+        // final deviceID = await storage.read(storage.DEVICE_ID_KEY);
+        // String? totp;
+        // if (secret != null) {
+        //   totp = TOTPGenerator().generateTOTP(secret);
+        // }
+        // final loginResponse =
+        //     await _finvuManagerInternal.loginWithUsernameAndPasscode(
+        //   state.aaHandle,
+        //   state.passcode,
+        //   totp,
+        //   deviceID,
+        // );
 
-        if (remoteConfig.deviceBindingAPIEnabled) {
-          if (loginResponse.deviceBindingValid != true) {
-            var userInfo = await _finvuManagerInternal.fetchUserInfo();
-            emit(
-              state.copyWith(
-                status: LoginStatus.needAuthentication,
-                mobileNumber: userInfo.mobileNumber,
-              ),
-            );
-          } else {
-            emit(state.copyWith(status: LoginStatus.loggedIn));
-          }
-        } else {
-          emit(state.copyWith(status: LoginStatus.loggedIn));
-        }
+        // if (remoteConfig.deviceBindingAPIEnabled) {
+        //   if (loginResponse.deviceBindingValid != true) {
+        //     var userInfo = await _finvuManagerInternal.fetchUserInfo();
+        //     emit(
+        //       state.copyWith(
+        //         status: LoginStatus.needAuthentication,
+        //         mobileNumber: userInfo.mobileNumber,
+        //       ),
+        //     );
+        //   } else {
+        //     emit(state.copyWith(status: LoginStatus.loggedIn));
+        //   }
+        // } else {
+        //   emit(state.copyWith(status: LoginStatus.loggedIn));
+        // }
       } else {
-        await _finvuManagerInternal.loginWithUsernameAndPasscode(
+        await _finvuManager.loginWithUsernameOrMobileNumberAndConsentHandle(
           state.aaHandle,
-          state.passcode,
-          null,
-          null,
+          "8459177562",
+          "XXX",
         );
         emit(state.copyWith(status: LoginStatus.loggedIn));
       }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_jailbreak_detection/flutter_jailbreak_detection.dart';
 import 'package:screen_protector/screen_protector.dart';
 
 class SecurityUtils {
@@ -15,19 +14,6 @@ class SecurityUtils {
       debugPrint("Error occurred during secure lock detection: $e");
       return false;
     }
-  }
-
-  static Future<bool> isDeviceSecurityCompromised() async {
-    bool jailbroken = false;
-    bool developerMode = false;
-
-    try {
-      jailbroken = await FlutterJailbreakDetection.jailbroken;
-      developerMode = await FlutterJailbreakDetection.developerMode;
-    } catch (e) {
-      debugPrint("Error occurred during jailbreak detection: $e");
-    }
-    return jailbroken && !developerMode;
   }
 
   static Future<void> enableScreenProtection() async {

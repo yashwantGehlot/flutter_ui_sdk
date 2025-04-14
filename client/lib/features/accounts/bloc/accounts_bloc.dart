@@ -3,7 +3,6 @@ import 'package:finvu_flutter_sdk/common/models/linked_account_with_fip.dart';
 import 'package:finvu_flutter_sdk/finvu_manager.dart';
 import 'package:finvu_flutter_sdk_core/finvu_exception.dart';
 import 'package:finvu_flutter_sdk_core/finvu_fip_info.dart';
-import 'package:finvu_flutter_sdk_internal/finvu_manager_internal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -13,7 +12,6 @@ part 'accounts_state.dart';
 
 class AccountsBloc extends Bloc<AccountsEvent, AccountsState> {
   final FinvuManager _finvuManager = FinvuManager();
-  final FinvuManagerInternal _finvuManagerInternal = FinvuManagerInternal();
 
   AccountsBloc() : super(const AccountsState()) {
     on<AccountsRefresh>(_onAccountsRefresh);
@@ -81,36 +79,36 @@ class AccountsBloc extends Bloc<AccountsEvent, AccountsState> {
       ),
     );
 
-    try {
-      await _finvuManagerInternal.unlinkAccount(event.account);
-      final linkedAccounts = state.linkedAccounts
-          .where(
-            (account) =>
-                account.accountReferenceNumber !=
-                event.account.accountReferenceNumber,
-          )
-          .toList();
-      emit(
-        state.copyWith(
-          status: AccountsStatus.accountDelinked,
-          linkedAccounts: linkedAccounts,
-        ),
-      );
-    } on FinvuException catch (err) {
-      debugPrint("Error while delinking account $err");
-      emit(
-        state.copyWith(
-          status: AccountsStatus.error,
-          error: err.toFinvuError(),
-        ),
-      );
-    } catch (err) {
-      debugPrint("Error while delinking account $err");
-      emit(
-        state.copyWith(
-          status: AccountsStatus.error,
-        ),
-      );
-    }
+    // try {
+    //   await _finvuManagerInternal.unlinkAccount(event.account);
+    //   final linkedAccounts = state.linkedAccounts
+    //       .where(
+    //         (account) =>
+    //             account.accountReferenceNumber !=
+    //             event.account.accountReferenceNumber,
+    //       )
+    //       .toList();
+    //   emit(
+    //     state.copyWith(
+    //       status: AccountsStatus.accountDelinked,
+    //       linkedAccounts: linkedAccounts,
+    //     ),
+    //   );
+    // } on FinvuException catch (err) {
+    //   debugPrint("Error while delinking account $err");
+    //   emit(
+    //     state.copyWith(
+    //       status: AccountsStatus.error,
+    //       error: err.toFinvuError(),
+    //     ),
+    //   );
+    // } catch (err) {
+    //   debugPrint("Error while delinking account $err");
+    //   emit(
+    //     state.copyWith(
+    //       status: AccountsStatus.error,
+    //     ),
+    //   );
+    // }
   }
 }

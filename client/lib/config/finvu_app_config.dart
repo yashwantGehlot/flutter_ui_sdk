@@ -1,43 +1,48 @@
-import 'dart:convert';
-
-import 'package:flutter/services.dart';
-
 enum Environment { dev, prod }
 
 class FinvuAppConfig {
   static Environment? environment;
-
-  static isDevelopment() => environment == Environment.dev;
-
-  static isProduction() => environment == Environment.prod;
-
   static late Map<String, dynamic> _config;
+
+  static bool isDevelopment() => environment == Environment.dev;
+  static bool isProduction() => environment == Environment.prod;
 
   static Future<void> initialize(Environment env) async {
     environment = env;
-    final configString =
-        await rootBundle.loadString("lib/assets/config/$environment.json");
-    _config = jsonDecode(configString);
+    _config = _getConfigFor(env);
   }
 
-  static String get apiUrl {
-    return _config["apiUrl"];
+  static Map<String, dynamic> _getConfigFor(Environment env) {
+    switch (env) {
+      case Environment.dev:
+        return _devConfig;
+      case Environment.prod:
+        return _prodConfig;
+    }
   }
+
+  static String get apiUrl => _config["apiUrl"];
 
   static List<String>? get certificatePins {
     var pins = _config["certificatePins"] as List<dynamic>?;
-    return pins?.map((pin) => pin as String).nonNulls.toList();
+    return pins?.map((pin) => pin as String).toList();
   }
 
-  static String get androidSha256 {
-    return _config["android"]["sha256"];
-  }
+  static const Map<String, dynamic> _devConfig = {
+    "apiUrl": "wss://webvwdev.finvu.in/api",
+    "certificatePins": [
+      "R6wXZnQsKKyg56qFKQNytvygyr/o4Mkq1VXL5LenBYI=",
+      "bdrBhpj38ffhxpubzkINl0rG+UyossdhcBYj+Zx2fcc="
+    ],
+  };
 
-  static String get iosTeamId {
-    return _config["ios"]["teamId"];
-  }
-
-  static String get getPackageName {
-    return _config["packageName"];
-  }
+  static const Map<String, dynamic> _prodConfig = {
+    "apiUrl": "wss://wsslive.finvu.in/api",
+    "certificatePins": [
+      "sbwmzb+GDVnfeIXamhbaeFHbFzEi83xGT3EKHt5QGbU=",
+      "NYbU7PBwV4y9J67c4guWTki8FJ+uudrXL0a4V4aRcrg=",
+      "6ItJWWXcuop8ZWO0C/FslqC0mbIhpnCPCerdYkJkD9o=",
+      "OdSlmQD9NWJh4EbcOHBxkhygPwNSwA9Q91eounfbcoE="
+    ],
+  };
 }

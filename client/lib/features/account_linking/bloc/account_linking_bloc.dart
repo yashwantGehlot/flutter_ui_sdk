@@ -11,7 +11,6 @@ import 'package:finvu_flutter_sdk_core/finvu_fip_details.dart';
 import 'package:finvu_flutter_sdk_core/finvu_fip_info.dart';
 import 'package:finvu_flutter_sdk_core/finvu_linked_accounts.dart';
 import 'package:finvu_flutter_sdk_core/finvu_user_info.dart';
-import 'package:finvu_flutter_sdk_internal/finvu_manager_internal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -21,10 +20,9 @@ part 'account_linking_state.dart';
 class AccountLinkingBloc
     extends Bloc<AccountLinkingEvent, AccountLinkingState> {
   final FinvuManager _finvuManager = FinvuManager();
-  final FinvuManagerInternal _finvuManagerInternal = FinvuManagerInternal();
 
   AccountLinkingBloc() : super(const AccountLinkingState()) {
-    on<AccountLinkingInitialized>(_onInitialize);
+//    on<AccountLinkingInitialized>(_onInitialize);
     on<AccountLinkingMobileNumberSelected>(_onMobileNumberSelected);
     on<AccountLinkingMobileNumberAdded>(_onMobileNumberAdded);
     on<AccountLinkingFipSelected>(_onFipSelected);
@@ -39,52 +37,52 @@ class AccountLinkingBloc
         _onMobileNumberVerificationSubmitted);
   }
 
-  void _onInitialize(
-    AccountLinkingInitialized event,
-    Emitter<AccountLinkingState> emit,
-  ) async {
-    emit(
-      state.copyWith(
-        status: AccountLinkingStatus.isInitializing,
-      ),
-    );
-    try {
-      final FinvuUserInfo userInfo =
-          await _finvuManagerInternal.fetchUserInfo();
-      final List<FinvuFIPInfo> fipInfoList =
-          await _finvuManager.fipsAllFIPOptions();
+  // void _onInitialize(
+  //   AccountLinkingInitialized event,
+  //   Emitter<AccountLinkingState> emit,
+  // ) async {
+  //   emit(
+  //     state.copyWith(
+  //       status: AccountLinkingStatus.isInitializing,
+  //     ),
+  //   );
+  //   try {
+  //     final FinvuUserInfo userInfo =
+  //         await _finvuManagerInternal.fetchUserInfo();
+  //     final List<FinvuFIPInfo> fipInfoList =
+  //         await _finvuManager.fipsAllFIPOptions();
 
-      // filter out fips which are not enabled.
-      fipInfoList.retainWhere((fipInfo) => fipInfo.enabled);
+  //     // filter out fips which are not enabled.
+  //     fipInfoList.retainWhere((fipInfo) => fipInfo.enabled);
 
-      final List<String> mobileNumbers = [];
-      mobileNumbers.add(userInfo.mobileNumber);
-      emit(
-        state.copyWith(
-          userInfo: userInfo,
-          mobileNumber: userInfo.mobileNumber,
-          mobileNumbers: mobileNumbers,
-          fipInfoList: fipInfoList,
-          status: AccountLinkingStatus.initializingComplete,
-        ),
-      );
-    } on FinvuException catch (err) {
-      debugPrint("Error while fetcing user info $err");
-      emit(
-        state.copyWith(
-          status: AccountLinkingStatus.error,
-          error: err.toFinvuError(),
-        ),
-      );
-    } catch (err) {
-      debugPrint("Error while fetching user info $err");
-      emit(
-        state.copyWith(
-          status: AccountLinkingStatus.error,
-        ),
-      );
-    }
-  }
+  //     final List<String> mobileNumbers = [];
+  //     mobileNumbers.add(userInfo.mobileNumber);
+  //     emit(
+  //       state.copyWith(
+  //         userInfo: userInfo,
+  //         mobileNumber: userInfo.mobileNumber,
+  //         mobileNumbers: mobileNumbers,
+  //         fipInfoList: fipInfoList,
+  //         status: AccountLinkingStatus.initializingComplete,
+  //       ),
+  //     );
+  //   } on FinvuException catch (err) {
+  //     debugPrint("Error while fetcing user info $err");
+  //     emit(
+  //       state.copyWith(
+  //         status: AccountLinkingStatus.error,
+  //         error: err.toFinvuError(),
+  //       ),
+  //     );
+  //   } catch (err) {
+  //     debugPrint("Error while fetching user info $err");
+  //     emit(
+  //       state.copyWith(
+  //         status: AccountLinkingStatus.error,
+  //       ),
+  //     );
+  //   }
+  // }
 
   void _onFipSelected(
     AccountLinkingFipSelected event,

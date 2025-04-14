@@ -10,14 +10,13 @@ import 'package:finvu_flutter_sdk/common/utils/ui_utils.dart';
 import 'package:finvu_flutter_sdk/common/widgets/base_page.dart';
 import 'package:finvu_flutter_sdk/common/widgets/finvu_fip_icon.dart';
 import 'package:finvu_flutter_sdk/common/widgets/finvu_page_header.dart';
-import 'package:finvu_flutter_sdk/features/account_data_fetch/account_data_page.dart';
 import 'package:finvu_flutter_sdk/features/accounts/account_utils.dart';
 import 'package:finvu_flutter_sdk/features/consents/bloc/consent_bloc.dart';
 import 'package:finvu_flutter_sdk/features/consents/self_consent_page.dart';
 import 'package:finvu_flutter_sdk/features/consents/views/linked_account_consent_cards.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:finvu_flutter_sdk/l10n/app_localizations.dart';
 
 class LinkedAccountsDetailsPage extends BasePage {
   const LinkedAccountsDetailsPage({super.key, required this.account});
@@ -232,14 +231,14 @@ class _LinkedAccountsDetailsPageState extends State<LinkedAccountsDetailsPage> {
     final ConsentDetails activeSelfConsent,
     LinkedAccountInfo account,
   ) async {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) =>
-            AccountDataPage(consent: activeSelfConsent, account: account),
-      ),
-    ).then((onValue) {
-      context.read<ConsentBloc>().add(const ConsentsRefresh());
-    });
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) =>
+    //         AccountDataPage(consent: activeSelfConsent, account: account),
+    //   ),
+    // ).then((onValue) {
+    //   context.read<ConsentBloc>().add(const ConsentsRefresh());
+    // });
   }
 }
