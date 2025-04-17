@@ -38,7 +38,7 @@ class _MainPageState extends State<MainPage> {
   static const List<BottomNavigationItem> _navigationItems =
       BottomNavigationItem.values;
 
-  BottomNavigationItem _selectedItem = _navigationItems.first;
+  BottomNavigationItem _selectedItem = _navigationItems[1];
   int _selectedIndex = 0;
 
   @override

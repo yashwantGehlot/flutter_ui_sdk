@@ -1,16 +1,11 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:app_settings/app_settings.dart';
-import 'package:finvu_flutter_sdk/common/widgets/finvu_action_button.dart';
-import 'package:finvu_flutter_sdk/common/widgets/mobile_number_input.dart';
 import 'package:finvu_flutter_sdk/common/widgets/otp_input.dart';
 import 'package:finvu_flutter_sdk/common/widgets/finvu_dialog.dart';
 import 'package:finvu_flutter_sdk/features/auth/login/bloc/login_bloc.dart';
-import 'package:finvu_flutter_sdk/features/auth/login/login_page.dart';
 import 'package:finvu_flutter_sdk/features/main/main_page.dart';
 import 'package:finvu_flutter_sdk/common/utils/finvu_colors.dart';
-import 'package:finvu_flutter_sdk/finvu_ui_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:finvu_flutter_sdk/l10n/app_localizations.dart';
@@ -54,58 +49,54 @@ class _MobileNumberOTPFormState extends State<MobileNumberOTPForm> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<LoginBloc, LoginState>(listener: (context, state) {
+      debugPrint('Login state: ${state.status}');
       if (state.status == LoginStatus.loggedIn) {
         Navigator.of(context).pushAndRemoveUntil(
             MainPage.route(state.aaHandle), (Route<dynamic> route) => false);
       } else if (state.status == LoginStatus.connectionEstablished) {
-        context.read<LoginBloc>().add(const LoginMobileNumberSubmitted());
+        context.read<LoginBloc>().add(const LoginAAHandlePasscodeSubmitted());
       } else if (state.status == LoginStatus.error) {
         ScaffoldMessenger.of(context)
           ..hideCurrentSnackBar()
           ..showSnackBar(
             SnackBar(
-              content: Text(
-                AppLocalizations.of(context)!.loginFailed,
-              ),
+              content: Text(AppLocalizations.of(context)!.loginFailed),
             ),
           );
       } else if (state.status == LoginStatus.otpSent) {
         _startResendOtpTimer();
       }
     }, builder: (context, state) {
+      if (state.status == LoginStatus.isAuthenticatingUsernamePasscode ||
+          (state.status == LoginStatus.unknown &&
+              (state.mobileNumber.isEmpty &&
+                  state.aaHandle.isEmpty &&
+                  state.consentHandleId.isEmpty))) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      }
       final List<Widget> children = [];
       children.add(const Padding(padding: EdgeInsets.only(top: 40)));
 
-      final showOtpInput = (state.status == LoginStatus.otpSent ||
-          state.status == LoginStatus.isAuthenticatingOtp);
+      final String headerText = AppLocalizations.of(context)!.verifyOtp;
 
-      final String headerText = showOtpInput
-          ? AppLocalizations.of(context)!.verifyOtp
-          : AppLocalizations.of(context)!.signIn;
-
-      children.add(Text(headerText,
-          style: const TextStyle(
-              fontSize: 20,
-              color: FinvuColors.black1D1B20,
-              fontWeight: FontWeight.bold)));
+      children.add(
+        Text(
+          headerText,
+          style: Theme.of(context).textTheme.headlineLarge,
+        ),
+      );
 
       children.add(const Padding(padding: EdgeInsets.only(top: 35)));
 
-      if (showOtpInput) {
-        children.add(_OtpInput());
-        children.add(const Padding(padding: EdgeInsets.only(top: 15)));
-        children.add(_buildResendOtpWidget(context));
-      } else {
-        children.add(_MobileNumberInput());
-      }
+      children.add(_OtpInput());
+      children.add(const Padding(padding: EdgeInsets.only(top: 15)));
+      children.add(_buildResendOtpWidget(context));
 
       children.add(const Padding(padding: EdgeInsets.only(top: 25)));
 
-      if (showOtpInput) {
-        children.add(_SubmitButton());
-      } else {
-        children.add(_GetOtpButton());
-      }
+      children.add(_SubmitButton());
 
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -118,7 +109,7 @@ class _MobileNumberOTPFormState extends State<MobileNumberOTPForm> {
     if (_enableResend) {
       return InkWell(
         onTap: () {
-          // TODO: resend OTP
+          context.read<LoginBloc>().add(const LoginAAHandlePasscodeSubmitted());
           _startResendOtpTimer();
           setState(() {
             _resendOtpSecondsRemaining = 60;
@@ -151,23 +142,6 @@ class _MobileNumberOTPFormState extends State<MobileNumberOTPForm> {
   }
 }
 
-class _MobileNumberInput extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<LoginBloc, LoginState>(
-      buildWhen: (previous, current) =>
-          previous.mobileNumber != current.mobileNumber,
-      builder: (context, state) {
-        return MobileNumberInput(
-          onChanged: (mobileNumber) => context
-              .read<LoginBloc>()
-              .add(LoginMobileNumberChanged(mobileNumber)),
-        );
-      },
-    );
-  }
-}
-
 class _OtpInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -177,36 +151,6 @@ class _OtpInput extends StatelessWidget {
         return OtpInput(
           onChanged: (otp) =>
               context.read<LoginBloc>().add(LoginOTPChanged(otp)),
-        );
-      },
-    );
-  }
-}
-
-class _GetOtpButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<LoginBloc, LoginState>(
-      builder: (context, state) {
-        if (state.status == LoginStatus.isSendingOtp) {
-          return const Align(
-            alignment: Alignment.center,
-            child: CircularProgressIndicator(),
-          );
-        }
-
-        return FinvuActionButton(
-          style:
-              ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(48)),
-          onPressed: state.status == LoginStatus.unknown
-              ? () {
-                  context.read<LoginBloc>().add(InitializeEvent());
-                }
-              : null,
-          child: Text(AppLocalizations.of(context)!.getOtp),
-          styleType: (FinvuUIManager().uiConfig?.isElevatedButton ?? true)
-              ? FinvuButtonStyleType.elevated
-              : FinvuButtonStyleType.outlined,
         );
       },
     );
@@ -232,9 +176,7 @@ class _SubmitButton extends StatelessWidget {
           onPressed: (state.status == LoginStatus.otpSent)
               ? () async {
                   try {
-                    context
-                        .read<LoginBloc>()
-                        .add(const LoginAAHandlePasscodeSubmitted());
+                    context.read<LoginBloc>().add(const LoginOTPSubmitted());
                   } catch (error) {
                     debugPrint('Error checking device security: $error');
                   }

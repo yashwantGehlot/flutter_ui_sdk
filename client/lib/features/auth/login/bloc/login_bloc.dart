@@ -6,6 +6,7 @@ import 'package:finvu_flutter_sdk/common/utils/totp_generator.dart';
 import 'package:finvu_flutter_sdk/config/finvu_app_config.dart';
 import 'package:finvu_flutter_sdk/finvu_config.dart';
 import 'package:finvu_flutter_sdk/finvu_manager.dart';
+import 'package:finvu_flutter_sdk_core/finvu_consent_info.dart';
 import 'package:finvu_flutter_sdk_core/finvu_exception.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,8 +20,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   LoginBloc() : super(const LoginState()) {
     on<InitializeEvent>(_onInitialize);
-    on<LoginAAHandleChanged>(_onAAHandleChanged);
-    on<LoginPasscodeChanged>(_onPasscodeChanged);
     on<LoginAAHandlePasscodeSubmitted>(_onAAHandlePasscodeSubmitted);
 
     on<LoginMobileNumberChanged>(_onMobileNumberChanged);
@@ -47,7 +46,14 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
         await _finvuManager.connect();
       }
-      emit(state.copyWith(status: LoginStatus.connectionEstablished));
+      emit(
+        state.copyWith(
+          status: LoginStatus.connectionEstablished,
+          mobileNumber: event.mobileNumber,
+          aaHandle: event.aaHandle,
+          consentHandleId: event.consentHandleId,
+        ),
+      );
     } on FinvuException catch (err) {
       debugPrint("err when trying to connect ${err.code}");
       final error = err.toFinvuError();
@@ -55,32 +61,24 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     }
   }
 
-  void _onAAHandleChanged(
-    LoginAAHandleChanged event,
-    Emitter<LoginState> emit,
-  ) {
-    emit(state.copyWith(aaHandle: event.aaHandle, status: LoginStatus.unknown));
-  }
-
-  void _onPasscodeChanged(
-    LoginPasscodeChanged event,
-    Emitter<LoginState> emit,
-  ) {
-    emit(state.copyWith(passcode: event.passcode, status: LoginStatus.unknown));
-  }
-
   void _onAAHandlePasscodeSubmitted(
     LoginAAHandlePasscodeSubmitted event,
     Emitter<LoginState> emit,
   ) async {
-    emit(state.copyWith(status: LoginStatus.isAuthenticatingUsernamePasscode));
+    emit(state.copyWith(status: LoginStatus.isSendingOtp));
     try {
-      await _finvuManager.loginWithUsernameOrMobileNumberAndConsentHandle(
+      final otpReference =
+          await _finvuManager.loginWithUsernameOrMobileNumberAndConsentHandle(
         state.aaHandle,
-        "8459177562",
-        "6b2423a3-399b-4732-82d4-8e0b8586d8d9",
+        state.mobileNumber,
+        state.consentHandleId,
       );
-      emit(state.copyWith(status: LoginStatus.loggedIn));
+      emit(
+        state.copyWith(
+          status: LoginStatus.otpSent,
+          otpReference: otpReference,
+        ),
+      );
     } on FinvuException catch (err) {
       debugPrint("Error while login ${err.code}");
       final authError = err.toFinvuError();
@@ -132,11 +130,16 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     LoginOTPSubmitted event,
     Emitter<LoginState> emit,
   ) async {
-    emit(state.copyWith(status: LoginStatus.isAuthenticatingOtp));
+    try {
+      emit(state.copyWith(status: LoginStatus.isAuthenticatingOtp));
 
-    // TODO: make actual network call for verify OTP and handle failure
-    await Future.delayed(const Duration(seconds: 4));
-    emit(state.copyWith(status: LoginStatus.loggedIn));
+      await _finvuManager.verifyLoginOtp(
+          state.otp, state.otpReference!.reference);
+      emit(state.copyWith(status: LoginStatus.loggedIn));
+    } catch (err) {
+      debugPrint("Error while adding mobile number $err");
+      emit(state.copyWith(status: LoginStatus.error));
+    }
   }
 
   void _onMobileNumberVerificationInitiated(

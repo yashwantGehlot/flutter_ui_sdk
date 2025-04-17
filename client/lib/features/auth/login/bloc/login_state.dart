@@ -16,17 +16,20 @@ enum LoginStatus {
 
 final class LoginState extends Equatable {
   final String aaHandle;
-  final String passcode;
   final String mobileNumber;
+  final String consentHandleId;
+  final FinvuLoginOtpReference? otpReference;
   final String otp;
+
   final LoginStatus status;
   final int errorTimestamp;
   final FinvuError? error;
 
   const LoginState({
     this.aaHandle = "",
-    this.passcode = "",
     this.mobileNumber = "",
+    this.consentHandleId = "",
+    this.otpReference,
     this.otp = "",
     this.error,
     this.status = LoginStatus.unknown,
@@ -34,11 +37,12 @@ final class LoginState extends Equatable {
   });
 
   LoginState copyWith({
-    String? aaHandle,
-    String? passcode,
-    String? mobileNumber,
-    String? otp,
     required LoginStatus status,
+    String? aaHandle,
+    String? mobileNumber,
+    String? consentHandleId,
+    FinvuLoginOtpReference? otpReference,
+    String? otp,
     FinvuError? error,
   }) {
     int errorTimestamp = this.errorTimestamp;
@@ -48,8 +52,9 @@ final class LoginState extends Equatable {
 
     return LoginState(
       aaHandle: aaHandle ?? this.aaHandle,
-      passcode: passcode ?? this.passcode,
       mobileNumber: mobileNumber ?? this.mobileNumber,
+      consentHandleId: consentHandleId ?? this.consentHandleId,
+      otpReference: otpReference ?? this.otpReference,
       otp: otp ?? this.otp,
       status: status,
       error: error,
@@ -60,8 +65,9 @@ final class LoginState extends Equatable {
   @override
   List<Object?> get props => [
         aaHandle,
-        passcode,
         mobileNumber,
+        consentHandleId,
+        otpReference,
         otp,
         status,
         errorTimestamp,

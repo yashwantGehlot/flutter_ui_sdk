@@ -48,10 +48,10 @@ class SDKConfig {
 
 class LoginConfig {
   final String mobileNumber;
-  final String consentHandle;
+  final String consentHandleId;
 
   LoginConfig({
     required this.mobileNumber,
-    required this.consentHandle,
+    required this.consentHandleId,
   });
 }
