@@ -44,40 +44,71 @@ class _FinvuAppState extends State<FinvuApp> {
       create: (context) => LanguageCubit()..initialize(),
       child: BlocBuilder<LanguageCubit, Locale?>(
         builder: (context, locale) {
-          return MaterialApp(
-            title: 'Finvu',
-            theme: widget.theme ??
-                ThemeData(
-                  colorScheme:
-                      ColorScheme.fromSeed(seedColor: FinvuColors.blue),
-                  useMaterial3: true,
-                  elevatedButtonTheme: ElevatedButtonThemeData(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: FinvuColors.blue,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
+          return WillPopScope(
+            onWillPop: () async {
+              bool shouldExit = await showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text("Exit AA Journey"),
+                    content: Text("Do you want to exit the journey?"),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(false),
+                        child: Text("No"),
                       ),
-                    ),
-                  ),
-                  outlinedButtonTheme: OutlinedButtonThemeData(
-                    style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: FinvuColors.blue),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(true),
+                        child: Text("Yes"),
                       ),
-                    ),
-                  ),
-                ),
-            localizationsDelegates: const [
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: AppLocalizations.supportedLocales,
-            locale: locale,
-            home: const SplashPage(),
+                    ],
+                  );
+                },
+              );
+
+              return shouldExit ?? false;
+            },
+            child: Navigator(
+              onGenerateRoute: (settings) {
+                return MaterialPageRoute(builder: (context) {
+                  return MaterialApp(
+                    title: 'Finvu',
+                    theme: widget.theme ??
+                        ThemeData(
+                          colorScheme:
+                              ColorScheme.fromSeed(seedColor: FinvuColors.blue),
+                          useMaterial3: true,
+                          elevatedButtonTheme: ElevatedButtonThemeData(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: FinvuColors.blue,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                            ),
+                          ),
+                          outlinedButtonTheme: OutlinedButtonThemeData(
+                            style: OutlinedButton.styleFrom(
+                              side: const BorderSide(color: FinvuColors.blue),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                            ),
+                          ),
+                        ),
+                    localizationsDelegates: const [
+                      AppLocalizations.delegate,
+                      GlobalMaterialLocalizations.delegate,
+                      GlobalWidgetsLocalizations.delegate,
+                      GlobalCupertinoLocalizations.delegate,
+                    ],
+                    supportedLocales: AppLocalizations.supportedLocales,
+                    locale: locale,
+                    home: const SplashPage(),
+                  );
+                });
+              },
+            ),
           );
         },
       ),

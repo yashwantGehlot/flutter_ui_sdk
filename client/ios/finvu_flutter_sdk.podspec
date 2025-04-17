@@ -22,5 +22,5 @@ A new Flutter plugin project.
   s.swift_version = '5.0'
   
   # dependencies
-  s.dependency 'FinvuSDK', '~> 0.1'
+  s.dependency 'FinvuSDK', '~> 1.0'
 end
