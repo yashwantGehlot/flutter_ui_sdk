@@ -233,8 +233,14 @@ class _ConsentDetailsPageState extends BasePageState<ConsentDetailsPage> {
               width: 30,
               height: 30,
               image: timelineCompleted
-                  ? const AssetImage('lib/assets/greenRingWithTick.png')
-                  : const AssetImage('lib/assets/greyRing.png'),
+                  ? const AssetImage(
+                      'lib/assets/greenRingWithTick.png',
+                      package: 'finvu_flutter_sdk',
+                    )
+                  : const AssetImage(
+                      'lib/assets/greyRing.png',
+                      package: 'finvu_flutter_sdk',
+                    ),
               fit: BoxFit.cover,
             ),
           ),

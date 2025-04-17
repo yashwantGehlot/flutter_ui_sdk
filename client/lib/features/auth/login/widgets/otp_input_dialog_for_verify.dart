@@ -28,11 +28,14 @@ class OtpInputDialogForVerifyState extends State<OtpInputDialogForVerify> {
             text: AppLocalizations.of(context)!.verifyOtp,
           ),
         ],
-        content: OtpInput(onChanged: (otp) {
-          setState(() {
-            _otp = otp;
-          });
-        }),
+        content: OtpInput(
+          onChanged: (otp) {
+            setState(() {
+              _otp = otp;
+            });
+          },
+          localizations: AppLocalizations.of(context)!,
+        ),
         buttonText: AppLocalizations.of(context)!.submit,
         onPressed: () {
           if (_otp.isNotEmpty) {

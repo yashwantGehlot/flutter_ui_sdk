@@ -11,40 +11,46 @@ class IdentifierInputDialog extends StatelessWidget {
   IdentifierInputDialog({
     super.key,
     required this.identifier,
+    required this.localizations,
   });
 
   final Identifier identifier;
+  final AppLocalizations localizations;
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return BlocBuilder<AccountLinkingBloc, AccountLinkingState>(
-        builder: (context, state) {
-      return FinvuDialog(
-        title: AppLocalizations.of(context)!.verifyYourDetails,
-        subtitle: [
-          TextSpan(
-            text: AppLocalizations.of(context)!
-                .pleaseEnterIdentifierToGetDetails(identifier.type),
+      builder: (context, state) {
+        return FinvuDialog(
+          title: localizations.verifyYourDetails,
+          subtitle: [
+            TextSpan(
+              text: localizations
+                  .pleaseEnterIdentifierToGetDetails(identifier.type),
+              style: theme.textTheme.bodyMedium,
+            ),
+          ],
+          content: Form(
+            key: _formKey,
+            child: _getIdentifierInput(context),
           ),
-        ],
-        content: Form(
-          key: _formKey,
-          child: _getIdentifierInput(context),
-        ),
-        buttonText: AppLocalizations.of(context)!.submit,
-        onPressed: () {
-          if (_formKey.currentState!.validate()) {
-            Navigator.of(context).pop();
-            context.read<AccountLinkingBloc>().add(
-                  AccountLinkingAdditionalIdentifierSubmitted(
-                    identifier.type,
-                  ),
-                );
-          }
-        },
-      );
-    });
+          buttonText: localizations.submit,
+          onPressed: () {
+            if (_formKey.currentState!.validate()) {
+              Navigator.of(context).pop();
+              context.read<AccountLinkingBloc>().add(
+                    AccountLinkingAdditionalIdentifierSubmitted(
+                      identifier.type,
+                    ),
+                  );
+            }
+          },
+        );
+      },
+    );
   }
 
   Widget _getIdentifierInput(BuildContext context) {
@@ -58,12 +64,16 @@ class IdentifierInputDialog extends StatelessWidget {
 
     switch (identifier.type.toUpperCase()) {
       case "DOB":
-        return DoBInput(onChanged: onChanged);
+        return DoBInput(
+          onChanged: onChanged,
+          localizations: localizations,
+        );
 
       default:
         return IdentifierInput(
           identifierType: identifier.type,
           onChanged: onChanged,
+          localizations: localizations,
         );
     }
   }

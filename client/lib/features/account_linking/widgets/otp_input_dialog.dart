@@ -17,7 +17,13 @@ const int _resendOtpDuration = 60;
 
 class OtpInputDialog extends StatefulWidget {
   final List<FinvuDiscoveredAccountInfo>? selectedAccounts;
-  const OtpInputDialog({super.key, this.selectedAccounts});
+  final AppLocalizations localizations;
+
+  const OtpInputDialog({
+    super.key,
+    this.selectedAccounts,
+    required this.localizations,
+  });
 
   @override
   State<OtpInputDialog> createState() => OtpInputDialogState();
@@ -55,6 +61,8 @@ class OtpInputDialogState extends State<OtpInputDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return BlocConsumer<AccountLinkingBloc, AccountLinkingState>(
         listener: (context, state) {
       if (state.status == AccountLinkingStatus.didSendOtp ||
@@ -67,10 +75,11 @@ class OtpInputDialogState extends State<OtpInputDialog> {
       final bool hasGstrAccount = widget.selectedAccounts!
           .any((account) => account.fiType == FiType.gstr13b.value);
       return FinvuDialog(
-        title: AppLocalizations.of(context)!.enterOtp,
+        title: widget.localizations.enterOtp,
         subtitle: [
           TextSpan(
-            text: AppLocalizations.of(context)!.verifyOtp,
+            text: widget.localizations.verifyOtp,
+            style: theme.textTheme.bodyMedium,
           ),
         ],
         content: Column(
@@ -91,6 +100,7 @@ class OtpInputDialogState extends State<OtpInputDialog> {
                         remoteConfig.accountLinkingOtpMaxLength,
                       )
                     ],
+              localizations: widget.localizations,
             ),
             Column(children: [
               const Padding(padding: EdgeInsets.only(top: 15)),
@@ -99,7 +109,7 @@ class OtpInputDialogState extends State<OtpInputDialog> {
             ])
           ],
         ),
-        buttonText: AppLocalizations.of(context)!.submit,
+        buttonText: widget.localizations.submit,
         isButtonLoading: state.status == AccountLinkingStatus.isVerifyingOtp,
         onPressed: () {
           if (_otp.isNotEmpty) {
@@ -113,6 +123,8 @@ class OtpInputDialogState extends State<OtpInputDialog> {
   }
 
   Widget _buildResendOtpWidget(BuildContext context) {
+    final theme = Theme.of(context);
+
     if (_enableResend) {
       return BlocBuilder<AccountLinkingBloc, AccountLinkingState>(
           builder: (context, state) {
@@ -131,10 +143,10 @@ class OtpInputDialogState extends State<OtpInputDialog> {
                   );
             },
             child: Text(
-              AppLocalizations.of(context)!.resendOtp,
-              style: const TextStyle(
+              widget.localizations.resendOtp,
+              style: theme.textTheme.bodyMedium?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: FinvuColors.blue,
+                color: theme.colorScheme.primary,
               ),
             ),
           ),
@@ -144,16 +156,25 @@ class OtpInputDialogState extends State<OtpInputDialog> {
 
     _resetAndStartOtpTimer(context);
     return Row(children: [
-      Text(AppLocalizations.of(context)!.resendOtpIn),
+      Text(
+        widget.localizations.resendOtpIn,
+        style: theme.textTheme.bodyMedium,
+      ),
       const Padding(padding: EdgeInsets.only(right: 4)),
       Text(
         _resendOtpSecondsRemaining.toString(),
-        style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+        style: theme.textTheme.bodyMedium?.copyWith(
+          color: theme.colorScheme.error,
+          fontWeight: FontWeight.bold,
+        ),
       ),
       const Padding(padding: EdgeInsets.only(right: 2)),
       Text(
-        AppLocalizations.of(context)!.secs,
-        style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+        widget.localizations.secs,
+        style: theme.textTheme.bodyMedium?.copyWith(
+          color: theme.colorScheme.error,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     ]);
   }

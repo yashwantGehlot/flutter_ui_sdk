@@ -8,23 +8,27 @@ class IdentifierInput extends StatelessWidget {
     super.key,
     required this.identifierType,
     required this.onChanged,
+    required this.localizations,
   });
 
   final String identifierType;
   final Function(String) onChanged;
+  final AppLocalizations localizations;
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return TextFormField(
       enableInteractiveSelection: false,
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return AppLocalizations.of(context)!.required;
+          return localizations.required;
         }
-        //Ref: https://incometaxindia.gov.in/Documents/about-pan.htm
+        // Ref: https://incometaxindia.gov.in/Documents/about-pan.htm
         final panRegExp = RegExp(r'^[A-Z]{5}[0-9]{4}[A-Z]{1}$');
         if (!panRegExp.hasMatch(value)) {
-          return AppLocalizations.of(context)!.pleaseEnterValidPanCardNumber;
+          return localizations.pleaseEnterValidPanCardNumber;
         }
 
         return null;
@@ -40,19 +44,31 @@ class IdentifierInput extends StatelessWidget {
         ),
       ],
       decoration: InputDecoration(
-        enabledBorder: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(14),
-          ),
-          borderSide: BorderSide(color: FinvuColors.greyD8E1EE),
-        ),
-        border: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(14),
-          ),
-        ),
+        enabledBorder: theme.inputDecorationTheme.enabledBorder ??
+            const OutlineInputBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(14),
+              ),
+              borderSide: BorderSide(color: FinvuColors.greyD8E1EE),
+            ),
+        focusedBorder: theme.inputDecorationTheme.focusedBorder ??
+            const OutlineInputBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(14),
+              ),
+              borderSide: BorderSide(color: FinvuColors.blue, width: 2),
+            ),
+        border: theme.inputDecorationTheme.border ??
+            const OutlineInputBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(14),
+              ),
+            ),
         labelText: identifierType,
         hintText: identifierType,
+        labelStyle: theme.inputDecorationTheme.labelStyle,
+        hintStyle: theme.inputDecorationTheme.hintStyle,
+        contentPadding: theme.inputDecorationTheme.contentPadding,
       ),
     );
   }

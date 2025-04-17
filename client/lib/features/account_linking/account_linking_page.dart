@@ -6,6 +6,7 @@ import 'package:finvu_flutter_sdk/common/utils/finvu_colors.dart';
 import 'package:finvu_flutter_sdk/common/utils/ui_utils.dart';
 import 'package:finvu_flutter_sdk/common/widgets/base_page.dart';
 import 'package:finvu_flutter_sdk/common/widgets/finvu_page_header.dart';
+import 'package:finvu_flutter_sdk/common/widgets/finvu_scaffold.dart';
 import 'package:finvu_flutter_sdk/features/account_linking/bloc/account_linking_bloc.dart';
 import 'package:finvu_flutter_sdk/features/account_linking/views/mobile_number_selection.dart';
 import 'package:finvu_flutter_sdk/features/account_linking/views/next_button.dart';
@@ -31,13 +32,13 @@ class AccountLinkingPage extends BasePage {
 class _AccountsPageState extends BasePageState<AccountLinkingPage> {
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return BlocProvider(
       create: (_) =>
           AccountLinkingBloc()..add(const AccountLinkingInitialized()),
-      child: Scaffold(
-        appBar: UIUtils.getFinvuAppBar(),
-        backgroundColor: FinvuColors.lightBlue,
-        body: BlocListener<AccountLinkingBloc, AccountLinkingState>(
+      child: FinvuScaffold(
+        child: BlocListener<AccountLinkingBloc, AccountLinkingState>(
           listener: (context, state) {
             if (state.status == AccountLinkingStatus.linkingSuccess) {
               Navigator.pop(context, Constants.linkingSuccessful);
@@ -49,39 +50,38 @@ class _AccountsPageState extends BasePageState<AccountLinkingPage> {
                   SnackBar(
                     content: Text(
                       ErrorUtils.getErrorMessage(context, state.error),
+                      style: theme.textTheme.bodyMedium,
                     ),
                   ),
                 );
               }
             }
           },
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                FinvuPageHeader(
-                    title: AppLocalizations.of(context)!.addNewAccount),
-                const Padding(
-                  padding: EdgeInsets.only(top: 30),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: Column(
-                    children: [
-// Temporarily removed from UI, to prevent adding mobile number of any other user.
-//                      const MobileNumberSelection(),
-                      SearchFipList(fiTypeCategory: widget.fiTypeCategory),
-                      const SizedBox(
-                        height: 90,
-                      ),
-                    ],
+          child: Stack(alignment: Alignment.bottomCenter, children: [
+            SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(top: 30),
                   ),
-                ),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
+                      children: [
+                        SearchFipList(fiTypeCategory: widget.fiTypeCategory),
+                        const SizedBox(
+                          height: 90,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
+            const NextButton()
+          ]),
         ),
-        bottomSheet: const NextButton(),
       ),
     );
   }

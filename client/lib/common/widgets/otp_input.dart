@@ -8,16 +8,17 @@ class OtpInput extends StatelessWidget {
   const OtpInput({
     super.key,
     required this.onChanged,
+    required this.localizations,
     this.inputFormatters = const [],
   });
 
   final Function(String) onChanged;
+  final AppLocalizations localizations;
   final List<TextInputFormatter> inputFormatters;
 
   @override
   Widget build(BuildContext context) {
-    final theme = FinvuUIManager().uiConfig?.inputDecorationTheme ??
-        Theme.of(context).inputDecorationTheme;
+    final theme = Theme.of(context).inputDecorationTheme;
 
     final defaultInputFormatters = [FilteringTextInputFormatter.digitsOnly];
 
@@ -45,8 +46,8 @@ class OtpInput extends StatelessWidget {
             const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(14)),
             ),
-        labelText: AppLocalizations.of(context)!.otp,
-        hintText: AppLocalizations.of(context)!.enterOtp,
+        labelText: localizations.otp,
+        hintText: localizations.enterOtp,
         labelStyle: theme.labelStyle,
         hintStyle: theme.hintStyle,
         contentPadding: theme.contentPadding,

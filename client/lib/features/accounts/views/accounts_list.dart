@@ -8,6 +8,7 @@ import 'package:finvu_flutter_sdk/common/models/linked_account_with_fip.dart';
 import 'package:finvu_flutter_sdk/features/accounts/linked_account_details_page.dart';
 import 'package:finvu_flutter_sdk/features/accounts/widgets/account_activity_dialog.dart';
 import 'package:finvu_flutter_sdk/features/accounts/widgets/account_delink_dialog.dart';
+import 'package:finvu_flutter_sdk/finvu_ui_manager.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,12 +25,13 @@ class AccountsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final uiConfig = FinvuUIManager().uiConfig;
     return BlocBuilder<AccountsBloc, AccountsState>(
       builder: (context, state) {
         if (state.status == AccountsStatus.isFetchingAccounts ||
             state.status == AccountsStatus.unknown) {
-          return const Center(
-            child: CircularProgressIndicator(),
+          return Center(
+            child: uiConfig?.loderWidget ?? const CircularProgressIndicator(),
           );
         }
 
@@ -59,6 +61,8 @@ class AccountsList extends StatelessWidget {
     FiTypeCategory fiTypeCategory,
     List<LinkedAccountInfo> linkedAccounts,
   ) {
+    final theme = Theme.of(context);
+    final uiConfig = FinvuUIManager().uiConfig;
     final List<String> fiTypes =
         fiTypeCategory.fiTypes.map((e) => e.value).toList();
     final accountsForType = linkedAccounts
@@ -72,23 +76,21 @@ class AccountsList extends StatelessWidget {
             children: [
               Text(
                 fiTypeCategory.getLocalizedTitle(context),
-                style: const TextStyle(
+                style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w900,
-                  fontSize: 16,
-                  color: Colors.black,
+                  color: uiConfig?.primaryColor,
                 ),
               ),
               const Padding(padding: EdgeInsets.only(left: 5)),
               accountsForType.isEmpty
                   ? const SizedBox.shrink()
                   : CircleAvatar(
-                      backgroundColor: FinvuColors.greyE1E4EF,
+                      backgroundColor: theme.colorScheme.surfaceVariant,
                       radius: 12,
                       child: Text(
                         accountsForType.length.toString(),
-                        style: const TextStyle(
-                          color: FinvuColors.grey81858F,
-                          fontSize: 12,
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ),
@@ -101,16 +103,15 @@ class AccountsList extends StatelessWidget {
                     style:
                         TextButton.styleFrom(padding: const EdgeInsets.all(0)),
                     onPressed: () => onPressedAddAccount(fiTypeCategory),
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.add_circle,
-                      color: FinvuColors.blue,
+                      color: uiConfig?.primaryColor,
                     ),
                     label: Text(
                       AppLocalizations.of(context)!.addNew,
-                      style: const TextStyle(
+                      style: theme.textTheme.labelMedium?.copyWith(
                         fontWeight: FontWeight.w900,
-                        fontSize: 12,
-                        color: FinvuColors.blue,
+                        color: uiConfig?.primaryColor,
                       ),
                     ),
                   ),
@@ -140,10 +141,13 @@ class AccountsList extends StatelessWidget {
     LinkedAccountInfo account,
     bool shouldAddBottomPadding,
   ) {
+    final theme = Theme.of(context);
+    final uiConfig = FinvuUIManager().uiConfig;
+
     return Padding(
       padding: EdgeInsets.only(bottom: shouldAddBottomPadding ? 10 : 0),
       child: ListTile(
-        tileColor: Colors.white,
+        tileColor: theme.cardColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(14),
         ),
@@ -154,25 +158,18 @@ class AccountsList extends StatelessWidget {
         title: Text(
           account.fipName,
           overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
+          style: theme.textTheme.bodyMedium?.copyWith(
             fontWeight: FontWeight.w400,
-            fontSize: 12,
-            color: FinvuColors.black111111,
+            color: uiConfig?.primaryColor,
           ),
         ),
         subtitle: Text(
           "${account.accountType} ${account.maskedAccountNumber}",
-          style: const TextStyle(
-            fontWeight: FontWeight.w400,
-            fontSize: 12,
-            color: FinvuColors.grey81858F,
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
           ),
         ),
-        trailing: OutlinedButton(
-          child: Text(AppLocalizations.of(context)!.delink),
-          onPressed: () => _showDelinkAccountDialog(context, account),
-        ),
-        onTap: () => _goToAccountDetailsPage(context, account),
+        onTap: null,
       ),
     );
   }
@@ -181,26 +178,28 @@ class AccountsList extends StatelessWidget {
     BuildContext context,
     FiTypeCategory fiTypeCategory,
   ) {
+    final theme = Theme.of(context);
+    final uiConfig = FinvuUIManager().uiConfig;
+
     return DottedBorder(
       borderType: BorderType.RRect,
       radius: const Radius.circular(20),
-      color: FinvuColors.blue,
+      color: uiConfig?.primaryColor ?? theme.primaryColor,
       dashPattern: const [6, 2],
       child: ListTile(
-        tileColor: Colors.white,
+        tileColor: theme.cardColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
-        leading: const Icon(
+        leading: Icon(
           Icons.add_circle,
-          color: FinvuColors.blue,
+          color: uiConfig?.primaryColor ?? theme.primaryColor,
         ),
         title: Text(
           AppLocalizations.of(context)!.addNew,
-          style: const TextStyle(
+          style: theme.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.w900,
-            fontSize: 14,
-            color: FinvuColors.blue,
+            color: uiConfig?.primaryColor ?? theme.primaryColor,
           ),
         ),
         onTap: () => onPressedAddAccount(fiTypeCategory),

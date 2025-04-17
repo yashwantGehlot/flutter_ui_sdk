@@ -4,6 +4,7 @@ import 'package:finvu_flutter_sdk/common/utils/constants.dart';
 import 'package:finvu_flutter_sdk/common/utils/error_utils.dart';
 import 'package:finvu_flutter_sdk/common/widgets/base_page.dart';
 import 'package:finvu_flutter_sdk/common/widgets/finvu_page_header.dart';
+import 'package:finvu_flutter_sdk/common/widgets/finvu_scaffold.dart';
 import 'package:finvu_flutter_sdk/features/account_linking/account_linking_page.dart';
 import 'package:finvu_flutter_sdk/features/accounts/bloc/accounts_bloc.dart';
 import 'package:finvu_flutter_sdk/features/accounts/views/accounts_list.dart';
@@ -46,30 +47,29 @@ class _AccountsPageState extends BasePageState<AccountsPage> {
           }
         },
         builder: (context, state) {
-          return SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                FinvuPageHeader(title: AppLocalizations.of(context)!.accounts),
-                const Padding(
-                  padding: EdgeInsets.only(top: 30),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: Column(
-                    children: [
-                      AccountAddUpsellBanner(
-                        onPressedAddAccount: () =>
-                            _goToAccountLinkingPage(context, null),
+          return SafeArea(
+            child: FinvuScaffold(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.only(top: 30),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20, right: 20),
+                      child: Column(
+                        children: [
+                          AccountsList(
+                            onPressedAddAccount: (category) =>
+                                _goToAccountLinkingPage(context, category),
+                          ),
+                        ],
                       ),
-                      AccountsList(
-                        onPressedAddAccount: (category) =>
-                            _goToAccountLinkingPage(context, category),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           );
         },

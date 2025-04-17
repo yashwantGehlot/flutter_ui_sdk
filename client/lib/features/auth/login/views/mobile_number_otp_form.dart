@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:app_settings/app_settings.dart';
 import 'package:finvu_flutter_sdk/common/widgets/otp_input.dart';
 import 'package:finvu_flutter_sdk/common/widgets/finvu_dialog.dart';
+import 'package:finvu_flutter_sdk/features/accounts/accounts_page.dart';
 import 'package:finvu_flutter_sdk/features/auth/login/bloc/login_bloc.dart';
-import 'package:finvu_flutter_sdk/features/main/main_page.dart';
 import 'package:finvu_flutter_sdk/common/utils/finvu_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -52,7 +52,10 @@ class _MobileNumberOTPFormState extends State<MobileNumberOTPForm> {
       debugPrint('Login state: ${state.status}');
       if (state.status == LoginStatus.loggedIn) {
         Navigator.of(context).pushAndRemoveUntil(
-            MainPage.route(state.aaHandle), (Route<dynamic> route) => false);
+            MaterialPageRoute<void>(
+              builder: (_) => const AccountsPage(),
+            ),
+            (Route<dynamic> route) => false);
       } else if (state.status == LoginStatus.connectionEstablished) {
         context.read<LoginBloc>().add(const LoginAAHandlePasscodeSubmitted());
       } else if (state.status == LoginStatus.error) {
@@ -151,6 +154,7 @@ class _OtpInput extends StatelessWidget {
         return OtpInput(
           onChanged: (otp) =>
               context.read<LoginBloc>().add(LoginOTPChanged(otp)),
+          localizations: AppLocalizations.of(context)!,
         );
       },
     );

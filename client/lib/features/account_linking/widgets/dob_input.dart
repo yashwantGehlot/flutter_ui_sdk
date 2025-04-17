@@ -1,12 +1,17 @@
 import 'package:finvu_flutter_sdk/common/utils/finvu_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:finvu_flutter_sdk/l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
+import 'package:finvu_flutter_sdk/l10n/app_localizations.dart';
 
 class DoBInput extends StatefulWidget {
-  const DoBInput({super.key, required this.onChanged});
+  const DoBInput({
+    super.key,
+    required this.onChanged,
+    required this.localizations,
+  });
 
   final Function(String) onChanged;
+  final AppLocalizations localizations;
 
   @override
   State<DoBInput> createState() => _DoBInputState();
@@ -17,12 +22,14 @@ class _DoBInputState extends State<DoBInput> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return TextFormField(
       keyboardType: TextInputType.datetime,
       controller: _controller,
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return AppLocalizations.of(context)!.required;
+          return widget.localizations.required;
         }
         return null;
       },
@@ -42,19 +49,30 @@ class _DoBInputState extends State<DoBInput> {
         });
       },
       decoration: InputDecoration(
-        enabledBorder: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(14),
-          ),
-          borderSide: BorderSide(color: FinvuColors.greyD8E1EE),
-        ),
-        border: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(14),
-          ),
-        ),
-        labelText: AppLocalizations.of(context)!.dateOfBirth,
-        hintText: AppLocalizations.of(context)!.dateOfBirth,
+        enabledBorder: theme.inputDecorationTheme.enabledBorder ??
+            const OutlineInputBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(14),
+              ),
+              borderSide: BorderSide(color: FinvuColors.greyD8E1EE),
+            ),
+        focusedBorder: theme.inputDecorationTheme.focusedBorder ??
+            const OutlineInputBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(14),
+              ),
+              borderSide: BorderSide(color: FinvuColors.blue, width: 2),
+            ),
+        border: theme.inputDecorationTheme.border ??
+            const OutlineInputBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(14),
+              ),
+            ),
+        labelText: widget.localizations.dateOfBirth,
+        hintText: widget.localizations.dateOfBirth,
+        labelStyle: theme.inputDecorationTheme.labelStyle,
+        hintStyle: theme.inputDecorationTheme.hintStyle,
         suffixIcon: const Icon(Icons.calendar_month),
       ),
     );
