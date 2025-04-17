@@ -10,6 +10,7 @@ class FinvuUIConfig {
   final bool isElevatedButton;
   final ElevatedButtonThemeData? elevatedButtonTheme;
   final OutlinedButtonThemeData? outlinedButtonTheme;
+  final InputDecorationTheme? inputDecorationTheme;
 
   FinvuUIConfig({
     required this.primaryColor,
@@ -21,6 +22,7 @@ class FinvuUIConfig {
     this.isElevatedButton = true,
     this.elevatedButtonTheme,
     this.outlinedButtonTheme,
+    this.inputDecorationTheme,
   });
 }
 

@@ -74,67 +74,88 @@ class FinvuUIManager {
 
     final defaultOutlinedButtonTheme = OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
-        side: const BorderSide(color: primaryColor),
+        side: const BorderSide(color: primaryColor, width: 1.5),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(14),
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
+        textStyle: const TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 16,
         ),
       ),
     );
 
+    final defaultInputDecorationTheme = InputDecorationTheme(
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: FinvuColors.greyD8E1EE),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: FinvuColors.greyD8E1EE),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: primaryColor, width: 2),
+      ),
+      labelStyle: const TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+        color: Color(0xFF64748B),
+      ),
+      hintStyle: const TextStyle(
+        fontSize: 14,
+        color: Colors.grey,
+      ),
+      contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+    );
+
     const textTheme = TextTheme(
-      // Large titles for main headers
       displayLarge: TextStyle(
         fontSize: 32,
         fontWeight: FontWeight.w600,
         color: currentColor,
         letterSpacing: -0.5,
       ),
-      // Medium titles for section headers
       displayMedium: TextStyle(
         fontSize: 28,
         fontWeight: FontWeight.w600,
         color: currentColor,
         letterSpacing: -0.5,
       ),
-      // Small titles for subsections
       displaySmall: TextStyle(
         fontSize: 24,
         fontWeight: FontWeight.w500,
         color: currentColor,
       ),
-      // Primary headings
       headlineLarge: TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.w500,
         color: currentColor,
       ),
-      // Secondary headings
       headlineMedium: TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.w500,
         color: currentColor,
       ),
-      // Tertiary headings
       headlineSmall: TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.w500,
         color: currentColor,
       ),
-      // Body text
       bodyLarge: TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.w400,
         color: currentColor,
         height: 1.5,
       ),
-      // Default body text
       bodyMedium: TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.w400,
         color: currentColor,
         height: 1.5,
       ),
-      // Labels and buttons
       labelLarge: TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.w500,
@@ -155,6 +176,7 @@ class FinvuUIManager {
       fontFamily: 'Roboto',
       elevatedButtonTheme: defaultElevatedButtonTheme,
       outlinedButtonTheme: defaultOutlinedButtonTheme,
+      inputDecorationTheme: defaultInputDecorationTheme,
     );
   }
 
@@ -168,6 +190,7 @@ class FinvuUIManager {
       fontFamily: _uiConfig?.fontFamily,
       elevatedButtonTheme: _uiConfig?.elevatedButtonTheme,
       outlinedButtonTheme: _uiConfig?.outlinedButtonTheme,
+      inputDecorationTheme: _uiConfig?.inputDecorationTheme,
     );
   }
 }

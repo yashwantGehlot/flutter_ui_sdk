@@ -3,6 +3,7 @@ import 'package:finvu_flutter_sdk/common/models/fi_type_category.dart';
 import 'package:finvu_flutter_sdk/common/utils/finvu_colors.dart';
 import 'package:finvu_flutter_sdk/common/widgets/finvu_fip_icon.dart';
 import 'package:finvu_flutter_sdk/features/account_linking/bloc/account_linking_bloc.dart';
+import 'package:finvu_flutter_sdk/finvu_ui_manager.dart';
 import 'package:finvu_flutter_sdk_core/finvu_fip_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -116,18 +117,37 @@ class _SearchFipListState extends State<SearchFipList> {
             _filterSearchResults(value);
           },
           controller: editingController,
-          decoration: InputDecoration(
-            isDense: true,
-            filled: true,
-            fillColor: Colors.white.withAlpha(1),
-            labelText: AppLocalizations.of(context)!.searchInstitution,
-            hintText: AppLocalizations.of(context)!.searchInstitution,
-            suffixIcon: const Icon(Icons.search),
-            border: const OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-              borderSide: BorderSide.none,
-            ),
-          ),
+          decoration: (() {
+            final theme = FinvuUIManager().uiConfig?.inputDecorationTheme ??
+                Theme.of(context).inputDecorationTheme;
+
+            return InputDecoration(
+              isDense: true,
+              filled: true,
+              fillColor: Colors.white.withAlpha(1),
+              labelText: AppLocalizations.of(context)!.searchInstitution,
+              hintText: AppLocalizations.of(context)!.searchInstitution,
+              suffixIcon: const Icon(Icons.search),
+              enabledBorder: theme.enabledBorder ??
+                  const OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    borderSide: BorderSide.none,
+                  ),
+              focusedBorder: theme.focusedBorder ??
+                  const OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    borderSide: BorderSide(color: FinvuColors.blue, width: 2),
+                  ),
+              border: theme.border ??
+                  const OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    borderSide: BorderSide.none,
+                  ),
+              labelStyle: theme.labelStyle,
+              hintStyle: theme.hintStyle,
+              contentPadding: theme.contentPadding,
+            );
+          })(),
         ),
       ),
     );
