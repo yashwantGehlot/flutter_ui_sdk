@@ -73,50 +73,14 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     LoginAAHandlePasscodeSubmitted event,
     Emitter<LoginState> emit,
   ) async {
-    if (state.aaHandle.isEmpty || state.passcode.isEmpty) {
-      return;
-    }
-
     emit(state.copyWith(status: LoginStatus.isAuthenticatingUsernamePasscode));
     try {
-      if (remoteConfig.deviceBindingEnabled) {
-        // final secret = await storage.read(storage.SECRET_KEY);
-        // final deviceID = await storage.read(storage.DEVICE_ID_KEY);
-        // String? totp;
-        // if (secret != null) {
-        //   totp = TOTPGenerator().generateTOTP(secret);
-        // }
-        // final loginResponse =
-        //     await _finvuManagerInternal.loginWithUsernameAndPasscode(
-        //   state.aaHandle,
-        //   state.passcode,
-        //   totp,
-        //   deviceID,
-        // );
-
-        // if (remoteConfig.deviceBindingAPIEnabled) {
-        //   if (loginResponse.deviceBindingValid != true) {
-        //     var userInfo = await _finvuManagerInternal.fetchUserInfo();
-        //     emit(
-        //       state.copyWith(
-        //         status: LoginStatus.needAuthentication,
-        //         mobileNumber: userInfo.mobileNumber,
-        //       ),
-        //     );
-        //   } else {
-        //     emit(state.copyWith(status: LoginStatus.loggedIn));
-        //   }
-        // } else {
-        //   emit(state.copyWith(status: LoginStatus.loggedIn));
-        // }
-      } else {
-        await _finvuManager.loginWithUsernameOrMobileNumberAndConsentHandle(
-          state.aaHandle,
-          "8459177562",
-          "XXX",
-        );
-        emit(state.copyWith(status: LoginStatus.loggedIn));
-      }
+      await _finvuManager.loginWithUsernameOrMobileNumberAndConsentHandle(
+        state.aaHandle,
+        "8459177562",
+        "6b2423a3-399b-4732-82d4-8e0b8586d8d9",
+      );
+      emit(state.copyWith(status: LoginStatus.loggedIn));
     } on FinvuException catch (err) {
       debugPrint("Error while login ${err.code}");
       final authError = err.toFinvuError();

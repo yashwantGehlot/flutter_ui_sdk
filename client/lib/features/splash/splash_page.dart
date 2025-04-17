@@ -47,7 +47,7 @@ class _SplashPageState extends BasePageState<SplashPage> {
             }
             if (state is SplashNavigateLogin) {
               final Route<void> route =
-                  LoginPage.route(LoginType.aaHandlePasscode);
+                  LoginPage.route(LoginType.mobileNumberOTP);
               Navigator.of(context)
                   .pushAndRemoveUntil(route, (Route<dynamic> route) => false);
               return;

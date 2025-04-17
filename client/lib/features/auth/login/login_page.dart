@@ -4,14 +4,13 @@ import 'package:finvu_flutter_sdk/common/utils/error_utils.dart';
 import 'package:finvu_flutter_sdk/common/widgets/base_page.dart';
 import 'package:finvu_flutter_sdk/common/widgets/finvu_auth_header.dart';
 import 'package:finvu_flutter_sdk/features/auth/login/bloc/login_bloc.dart';
-import 'package:finvu_flutter_sdk/features/auth/login/views/aa_handle_passcode_form.dart';
 import 'package:finvu_flutter_sdk/features/auth/login/views/mobile_number_otp_form.dart';
 import 'package:finvu_flutter_sdk/common/utils/finvu_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:finvu_flutter_sdk/l10n/app_localizations.dart';
 
-enum LoginType { aaHandlePasscode, mobileNumberOTP }
+enum LoginType { mobileNumberOTP }
 
 class LoginPage extends BasePage {
   const LoginPage({super.key, required this.loginType});
@@ -82,8 +81,6 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget getForm() {
     switch (widget.loginType) {
-      case LoginType.aaHandlePasscode:
-        return const AAHandlePasscodeForm();
       case LoginType.mobileNumberOTP:
         return const MobileNumberOTPForm();
       default:

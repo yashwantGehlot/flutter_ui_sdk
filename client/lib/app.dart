@@ -1,4 +1,4 @@
-import 'package:finvu_flutter_sdk/common/utils/security_utils.dart';
+import 'package:finvu_flutter_sdk/config/finvu_app_config.dart';
 import 'package:finvu_flutter_sdk/features/language/language_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,8 +8,20 @@ import 'features/splash/splash_page.dart';
 import 'package:finvu_flutter_sdk/l10n/app_localizations.dart';
 
 class FinvuApp extends StatefulWidget {
-  const FinvuApp({super.key});
+  const FinvuApp({
+    super.key,
+    required this.consentHandleId,
+    required this.mobileNumber,
+    required this.environment,
+    this.theme,
+    this.locale,
+  });
 
+  final String mobileNumber;
+  final String consentHandleId;
+  final Environment environment;
+  final ThemeData? theme;
+  final Locale? locale;
   @override
   State<StatefulWidget> createState() => _FinvuAppState();
 }
@@ -18,12 +30,11 @@ class _FinvuAppState extends State<FinvuApp> {
   @override
   void initState() {
     super.initState();
-    SecurityUtils.enableScreenProtection();
+    FinvuAppConfig.initialize(widget.environment);
   }
 
   @override
   void dispose() {
-    SecurityUtils.disableScreenProtection();
     super.dispose();
   }
 
@@ -35,30 +46,29 @@ class _FinvuAppState extends State<FinvuApp> {
         builder: (context, locale) {
           return MaterialApp(
             title: 'Finvu',
-            navigatorObservers: [
-//              FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance)
-            ],
-            theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(seedColor: FinvuColors.blue),
-              useMaterial3: true,
-              elevatedButtonTheme: ElevatedButtonThemeData(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: FinvuColors.blue,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
+            theme: widget.theme ??
+                ThemeData(
+                  colorScheme:
+                      ColorScheme.fromSeed(seedColor: FinvuColors.blue),
+                  useMaterial3: true,
+                  elevatedButtonTheme: ElevatedButtonThemeData(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: FinvuColors.blue,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                  ),
+                  outlinedButtonTheme: OutlinedButtonThemeData(
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: FinvuColors.blue),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-              outlinedButtonTheme: OutlinedButtonThemeData(
-                style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: FinvuColors.blue),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                ),
-              ),
-            ),
             localizationsDelegates: const [
               AppLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,

@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:app_settings/app_settings.dart';
-import 'package:finvu_flutter_sdk/common/utils/security_utils.dart';
 import 'package:finvu_flutter_sdk/common/widgets/mobile_number_input.dart';
 import 'package:finvu_flutter_sdk/common/widgets/otp_input.dart';
 import 'package:finvu_flutter_sdk/common/widgets/finvu_dialog.dart';
@@ -104,11 +103,6 @@ class _MobileNumberOTPFormState extends State<MobileNumberOTPForm> {
         children.add(_SubmitButton());
       } else {
         children.add(_GetOtpButton());
-        children.addAll([
-          const Padding(padding: EdgeInsets.only(top: 20)),
-          _buildOrWidget(context),
-          _buildUsePasscodeToSignInWidget(context),
-        ]);
       }
 
       return Column(
@@ -116,38 +110,6 @@ class _MobileNumberOTPFormState extends State<MobileNumberOTPForm> {
         children: children,
       );
     });
-  }
-
-  Widget _buildOrWidget(BuildContext context) {
-    return Row(children: [
-      const Expanded(
-          child: Divider(
-        indent: 50,
-        endIndent: 10,
-      )),
-      Text(AppLocalizations.of(context)!.or),
-      const Expanded(
-          child: Divider(
-        indent: 10,
-        endIndent: 50,
-      ))
-    ]);
-  }
-
-  Widget _buildUsePasscodeToSignInWidget(BuildContext context) {
-    return Align(
-      alignment: Alignment.center,
-      child: TextButton(
-        style: TextButton.styleFrom(
-            textStyle: const TextStyle(fontWeight: FontWeight.bold)),
-        onPressed: () => Navigator.pushAndRemoveUntil(
-          context,
-          LoginPage.route(LoginType.aaHandlePasscode),
-          (Route<dynamic> route) => false,
-        ),
-        child: Text(AppLocalizations.of(context)!.usePinToSignIn),
-      ),
-    );
   }
 
   Widget _buildResendOtpWidget(BuildContext context) {
@@ -264,23 +226,9 @@ class _SubmitButton extends StatelessWidget {
           onPressed: (state.status == LoginStatus.otpSent)
               ? () async {
                   try {
-                    final currentContext = context;
-                    bool isSecure = await SecurityUtils.isSecureLockEnabled();
-                    if (!currentContext.mounted) {
-                      return;
-                    }
-                    if (!isSecure) {
-                      _showSecureErrorDialog(
-                          context,
-                          AppLocalizations.of(context)!.securityError,
-                          AppLocalizations.of(context)!
-                              .securityPasscodeLockErrorDescription,
-                          true);
-                    } else {
-                      currentContext
-                          .read<LoginBloc>()
-                          .add(const LoginAAHandlePasscodeSubmitted());
-                    }
+                    context
+                        .read<LoginBloc>()
+                        .add(const LoginAAHandlePasscodeSubmitted());
                   } catch (error) {
                     debugPrint('Error checking device security: $error');
                   }

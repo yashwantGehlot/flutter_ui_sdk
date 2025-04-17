@@ -29,20 +29,12 @@ class FinvuAppConfig {
   }
 
   static const Map<String, dynamic> _devConfig = {
-    "apiUrl": "wss://webvwdev.finvu.in/api",
-    "certificatePins": [
-      "R6wXZnQsKKyg56qFKQNytvygyr/o4Mkq1VXL5LenBYI=",
-      "bdrBhpj38ffhxpubzkINl0rG+UyossdhcBYj+Zx2fcc="
-    ],
+    "apiUrl": "wss://webvwdev.finvu.in/consentapi",
+    "certificatePins": [],
   };
 
   static const Map<String, dynamic> _prodConfig = {
-    "apiUrl": "wss://wsslive.finvu.in/api",
-    "certificatePins": [
-      "sbwmzb+GDVnfeIXamhbaeFHbFzEi83xGT3EKHt5QGbU=",
-      "NYbU7PBwV4y9J67c4guWTki8FJ+uudrXL0a4V4aRcrg=",
-      "6ItJWWXcuop8ZWO0C/FslqC0mbIhpnCPCerdYkJkD9o=",
-      "OdSlmQD9NWJh4EbcOHBxkhygPwNSwA9Q91eounfbcoE="
-    ],
+    "apiUrl": "wss://wsslive.finvu.in/consentapi",
+    "certificatePins": [],
   };
 }

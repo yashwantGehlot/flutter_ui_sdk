@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 void mainCommon(Environment environment) async {
   WidgetsFlutterBinding.ensureInitialized();
   await _initialize(environment);
-  runApp(const FinvuApp());
+  // runApp(FinvuApp(
+  //   environment: environment,
+  // ));
 }
 
 Future<void> _initialize(Environment environment) async {
