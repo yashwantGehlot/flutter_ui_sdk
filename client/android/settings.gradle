@@ -1,3 +1,0 @@
-rootProject.name = 'finvu_flutter_sdk'
-include ':finvu-android-sdk'
-include ':finvu-android-sdk-core'
