@@ -1,0 +1,35 @@
+buildscript {
+    ext.kotlin_version = '2.0.0'
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+
+        // FIXME: Following needs to be added only for debug version of the app since we want to build everything from local files. For release version we should remove this.
+        flatDir {
+            dirs '../../../../../finvu_android_sdk/core/build/outputs/aar/', '../../../../../finvu_android_sdk/client/build/outputs/aar/'
+        }
+    }
+}
+
+rootProject.buildDir = '../build'
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+subprojects {
+    project.evaluationDependsOn(':app')
+}
+
+tasks.register("clean", Delete) {
+    delete rootProject.buildDir
+}
