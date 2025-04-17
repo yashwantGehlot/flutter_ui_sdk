@@ -3,6 +3,7 @@ import 'package:finvu_flutter_sdk/common/utils/analytics_events.dart';
 import 'package:finvu_flutter_sdk/common/utils/error_utils.dart';
 import 'package:finvu_flutter_sdk/common/widgets/base_page.dart';
 import 'package:finvu_flutter_sdk/common/widgets/finvu_auth_header.dart';
+import 'package:finvu_flutter_sdk/common/widgets/finvu_scaffold.dart';
 import 'package:finvu_flutter_sdk/features/auth/login/bloc/login_bloc.dart';
 import 'package:finvu_flutter_sdk/features/auth/login/views/mobile_number_otp_form.dart';
 import 'package:finvu_flutter_sdk/common/utils/finvu_colors.dart';
@@ -39,36 +40,38 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.only(left: 25, right: 25),
-          child: BlocProvider(
-            create: (_) => LoginBloc(),
-            child: BlocListener<LoginBloc, LoginState>(
-              listener: (context, state) {
-                if (state.status == LoginStatus.error) {
-                  if (state.error?.code ==
-                      FinvuErrorCode.sslPinningFailureError) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          ErrorUtils.getErrorMessage(
-                            context,
-                            state.error,
+        child: FinvuScaffold(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 25, right: 25),
+            child: BlocProvider(
+              create: (_) => LoginBloc(),
+              child: BlocListener<LoginBloc, LoginState>(
+                listener: (context, state) {
+                  if (state.status == LoginStatus.error) {
+                    if (state.error?.code ==
+                        FinvuErrorCode.sslPinningFailureError) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            ErrorUtils.getErrorMessage(
+                              context,
+                              state.error,
+                            ),
                           ),
                         ),
-                      ),
-                    );
+                      );
+                    }
                   }
-                }
-              },
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const FinvuAuthHeader(),
-                    getForm(),
-                    const Padding(padding: EdgeInsets.only(top: 30)),
-                  ],
+                },
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const FinvuAuthHeader(),
+                      getForm(),
+                      const Padding(padding: EdgeInsets.only(top: 30)),
+                    ],
+                  ),
                 ),
               ),
             ),
