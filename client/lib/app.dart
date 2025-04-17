@@ -26,6 +26,11 @@ class FinvuApp extends StatefulWidget {
   State<StatefulWidget> createState() => _FinvuAppState();
 }
 
+enum FinvuButtonStyleType {
+  elevated,
+  outlined,
+}
+
 class _FinvuAppState extends State<FinvuApp> {
   bool _loadedFonts = false;
 

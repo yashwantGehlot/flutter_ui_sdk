@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:app_settings/app_settings.dart';
+import 'package:finvu_flutter_sdk/common/widgets/finvu_action_button.dart';
 import 'package:finvu_flutter_sdk/common/widgets/mobile_number_input.dart';
 import 'package:finvu_flutter_sdk/common/widgets/otp_input.dart';
 import 'package:finvu_flutter_sdk/common/widgets/finvu_dialog.dart';
@@ -9,6 +10,7 @@ import 'package:finvu_flutter_sdk/features/auth/login/bloc/login_bloc.dart';
 import 'package:finvu_flutter_sdk/features/auth/login/login_page.dart';
 import 'package:finvu_flutter_sdk/features/main/main_page.dart';
 import 'package:finvu_flutter_sdk/common/utils/finvu_colors.dart';
+import 'package:finvu_flutter_sdk/finvu_ui_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:finvu_flutter_sdk/l10n/app_localizations.dart';
@@ -193,15 +195,19 @@ class _GetOtpButton extends StatelessWidget {
           );
         }
 
-        return ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                minimumSize: const Size.fromHeight(48)),
-            onPressed: state.status == LoginStatus.unknown
-                ? () {
-                    context.read<LoginBloc>().add(InitializeEvent());
-                  }
-                : null,
-            child: Text(AppLocalizations.of(context)!.getOtp));
+        return FinvuActionButton(
+          style:
+              ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(48)),
+          onPressed: state.status == LoginStatus.unknown
+              ? () {
+                  context.read<LoginBloc>().add(InitializeEvent());
+                }
+              : null,
+          child: Text(AppLocalizations.of(context)!.getOtp),
+          styleType: (FinvuUIManager().uiConfig?.isElevatedButton ?? true)
+              ? FinvuButtonStyleType.elevated
+              : FinvuButtonStyleType.outlined,
+        );
       },
     );
   }
