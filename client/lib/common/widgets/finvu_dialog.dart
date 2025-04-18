@@ -1,4 +1,5 @@
 import 'package:finvu_flutter_sdk/common/utils/finvu_colors.dart';
+import 'package:finvu_flutter_sdk/finvu_ui_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:finvu_flutter_sdk/l10n/app_localizations.dart';
 
@@ -77,9 +78,10 @@ class FinvuDialog extends StatelessWidget {
                 children: [
                   const SizedBox(height: 16),
                   isButtonLoading
-                      ? const Align(
+                      ? Align(
                           alignment: Alignment.center,
-                          child: CircularProgressIndicator(),
+                          child: FinvuUIManager().uiConfig?.loderWidget ??
+                              const CircularProgressIndicator(),
                         )
                       : SizedBox(
                           width: double.infinity,

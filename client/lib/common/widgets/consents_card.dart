@@ -197,12 +197,12 @@ class ConsentsCard extends StatelessWidget {
     return ListTile(
       tileColor: Colors.white,
       leading: FinvuFipIcon(
-        iconUri: consentInfo.entityInfo.entityIconUri ??
-            consentInfo.entityInfo.entityLogoUri,
+        iconUri: consentInfo.entityInfo?.entityIconUri ??
+            consentInfo.entityInfo?.entityLogoUri,
         size: 35,
       ),
       title: Text(
-        consentInfo.entityInfo.entityName,
+        consentInfo.entityInfo?.entityName ?? '',
         overflow: TextOverflow.ellipsis,
         style: const TextStyle(
           fontWeight: FontWeight.w400,

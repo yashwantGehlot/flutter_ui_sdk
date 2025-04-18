@@ -7,9 +7,11 @@ import 'package:finvu_flutter_sdk/common/utils/ui_utils.dart';
 import 'package:finvu_flutter_sdk/common/widgets/finvu_fip_icon.dart';
 import 'package:finvu_flutter_sdk/features/account_linking/account_linking_page.dart';
 import 'package:finvu_flutter_sdk/features/consents/bloc/consent_bloc.dart';
+import 'package:finvu_flutter_sdk_core/finvu_ui_initialization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:finvu_flutter_sdk/l10n/app_localizations.dart';
+import 'package:finvu_flutter_sdk/finvu_ui_manager.dart';
 
 class ConsentAccountsSelection extends StatefulWidget {
   const ConsentAccountsSelection({
@@ -29,30 +31,38 @@ class _ConsentAccountsSelectionState extends State<ConsentAccountsSelection> {
 
   @override
   Widget build(BuildContext context) {
+    final uiConfig = FinvuUIManager().uiConfig;
+    final theme = Theme.of(context);
+
     return BlocBuilder<ConsentBloc, ConsentState>(
       builder: (context, state) {
         if (state.status == ConsentStatus.isFetchingLinkedAccounts) {
-          return const Center(
-            child: CircularProgressIndicator(),
+          return Center(
+            child: uiConfig?.loderWidget ?? const CircularProgressIndicator(),
           );
         }
 
         return Card(
-          color: Colors.white,
+          color: theme.cardColor ?? uiConfig?.secondaryColor ?? Colors.white,
           surfaceTintColor: Colors.transparent,
           elevation: 0,
           child: Padding(
             padding: const EdgeInsets.all(15),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                _buildHeaderWidget(context, state.linkedAccounts),
+                _buildHeaderWidget(
+                    context, state.linkedAccounts, theme, uiConfig),
                 const SizedBox(height: 5),
-                _buildAccountsListWidget(state.linkedAccounts),
+                _buildAccountsListWidget(state.linkedAccounts, theme, uiConfig),
                 const SizedBox(height: 15),
-                _buildApproveConsentButton(context, state.status),
+                _buildConsentDetailsWidget(context, widget.consent),
                 const SizedBox(height: 15),
-                _buildRejectConsentButton(context, state.status),
+                _buildApproveConsentButton(
+                    context, state.status, theme, uiConfig),
+                const SizedBox(height: 15),
+                _buildRejectConsentButton(
+                    context, state.status, theme, uiConfig),
               ],
             ),
           ),
@@ -64,6 +74,8 @@ class _ConsentAccountsSelectionState extends State<ConsentAccountsSelection> {
   Widget _buildHeaderWidget(
     BuildContext context,
     List<LinkedAccountInfo> linkedAccounts,
+    ThemeData theme,
+    FinvuUIConfig? uiConfig,
   ) {
     final areAllAccountsSelected =
         _selectedAccounts.length == linkedAccounts.length;
@@ -72,14 +84,24 @@ class _ConsentAccountsSelectionState extends State<ConsentAccountsSelection> {
       children: [
         Text(
           AppLocalizations.of(context)!.chooseAccounts,
-          style: const TextStyle(
-            fontWeight: FontWeight.w900,
-            fontSize: 16,
-            color: Colors.black,
-          ),
+          style: theme.textTheme.bodyLarge?.copyWith(
+                fontWeight: FontWeight.w900,
+              ) ??
+              uiConfig?.textTheme.bodyLarge?.copyWith(
+                fontWeight: FontWeight.w900,
+              ) ??
+              const TextStyle(
+                fontWeight: FontWeight.w900,
+                fontSize: 16,
+                color: Colors.black,
+              ),
         ),
         TextButton(
-          style: TextButton.styleFrom(padding: const EdgeInsets.all(0)),
+          style: TextButton.styleFrom(
+            padding: const EdgeInsets.all(0),
+            foregroundColor:
+                theme.colorScheme.primary ?? uiConfig?.primaryColor,
+          ),
           onPressed: () {
             setState(() {
               _selectedAccounts = areAllAccountsSelected ? [] : linkedAccounts;
@@ -89,34 +111,48 @@ class _ConsentAccountsSelectionState extends State<ConsentAccountsSelection> {
             areAllAccountsSelected
                 ? AppLocalizations.of(context)!.deselectAll.toUpperCase()
                 : AppLocalizations.of(context)!.selectAll.toUpperCase(),
-            style: const TextStyle(
-              fontWeight: FontWeight.w700,
-              fontSize: 12,
-              color: FinvuColors.blue,
-            ),
+            style: theme.textTheme.labelLarge?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ) ??
+                uiConfig?.textTheme.labelLarge?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ) ??
+                const TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 12,
+                  color: FinvuColors.blue,
+                ),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildAccountsListWidget(List<LinkedAccountInfo> linkedAccounts) {
+  Widget _buildAccountsListWidget(
+    List<LinkedAccountInfo> linkedAccounts,
+    ThemeData theme,
+    FinvuUIConfig? uiConfig,
+  ) {
     return Column(
       children: linkedAccounts
           .where((account) =>
               widget.consent.fiTypes?.contains(account.fiType) ?? false)
-          .map((account) => _buildLinkedAccountWidget(account))
+          .map((account) => _buildLinkedAccountWidget(account, theme, uiConfig))
           .toList(),
     );
   }
 
   Widget _buildLinkedAccountWidget(
     LinkedAccountInfo account,
+    ThemeData theme,
+    FinvuUIConfig? uiConfig,
   ) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: ListTile(
-        tileColor: FinvuColors.greyF3F5FD,
+        tileColor: theme.cardColor ??
+            uiConfig?.secondaryColor ??
+            FinvuColors.greyF3F5FD,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(14),
         ),
@@ -127,26 +163,40 @@ class _ConsentAccountsSelectionState extends State<ConsentAccountsSelection> {
         title: Text(
           account.fipName,
           overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
-            fontWeight: FontWeight.w400,
-            fontSize: 12,
-            color: FinvuColors.black111111,
-          ),
+          style: theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.w400,
+              ) ??
+              uiConfig?.textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.w400,
+              ) ??
+              const TextStyle(
+                fontWeight: FontWeight.w400,
+                fontSize: 12,
+                color: FinvuColors.black111111,
+              ),
         ),
         subtitle: Text(
           "${account.accountType} ${account.maskedAccountNumber}",
-          style: const TextStyle(
-            fontWeight: FontWeight.w400,
-            fontSize: 12,
-            color: FinvuColors.grey81858F,
-          ),
+          style: theme.textTheme.bodySmall?.copyWith(
+                fontWeight: FontWeight.w400,
+              ) ??
+              uiConfig?.textTheme.bodySmall?.copyWith(
+                fontWeight: FontWeight.w400,
+              ) ??
+              const TextStyle(
+                fontWeight: FontWeight.w400,
+                fontSize: 12,
+                color: FinvuColors.grey81858F,
+              ),
         ),
         trailing: SizedBox(
           width: 24,
           height: 24,
           child: Checkbox.adaptive(
             value: _selectedAccounts.contains(account),
-            activeColor: FinvuColors.blue,
+            activeColor: theme.colorScheme.primary ??
+                uiConfig?.primaryColor ??
+                FinvuColors.blue,
             onChanged: (value) {
               setState(() {
                 if (value!) {
@@ -263,11 +313,15 @@ class _ConsentAccountsSelectionState extends State<ConsentAccountsSelection> {
   }
 
   Widget _buildApproveConsentButton(
-      BuildContext context, ConsentStatus status) {
+    BuildContext context,
+    ConsentStatus status,
+    ThemeData theme,
+    FinvuUIConfig? uiConfig,
+  ) {
     if (status == ConsentStatus.isApprovingConsent) {
-      return const Align(
+      return Align(
         alignment: Alignment.center,
-        child: CircularProgressIndicator(),
+        child: uiConfig?.loderWidget ?? const CircularProgressIndicator(),
       );
     }
 
@@ -284,20 +338,24 @@ class _ConsentAccountsSelectionState extends State<ConsentAccountsSelection> {
               ),
             );
       },
-      style: ElevatedButton.styleFrom(
-        minimumSize: const Size.fromHeight(48),
-      ),
+      style: theme.elevatedButtonTheme.style ??
+          uiConfig?.elevatedButtonTheme?.style,
       child: Text(
         AppLocalizations.of(context)!.approveConsent,
       ),
     );
   }
 
-  Widget _buildRejectConsentButton(BuildContext context, ConsentStatus status) {
+  Widget _buildRejectConsentButton(
+    BuildContext context,
+    ConsentStatus status,
+    ThemeData theme,
+    FinvuUIConfig? uiConfig,
+  ) {
     if (status == ConsentStatus.isRejectingConsent) {
-      return const Align(
+      return Align(
         alignment: Alignment.center,
-        child: CircularProgressIndicator(),
+        child: uiConfig?.loderWidget ?? const CircularProgressIndicator(),
       );
     }
 
@@ -305,11 +363,11 @@ class _ConsentAccountsSelectionState extends State<ConsentAccountsSelection> {
       onPressed: () {
         context.read<ConsentBloc>().add(ConsentReject(consent: widget.consent));
       },
-      style: OutlinedButton.styleFrom(
-        minimumSize: const Size.fromHeight(48),
-      ),
+      style: theme.outlinedButtonTheme.style ??
+          uiConfig?.outlinedButtonTheme?.style,
       child: Text(
         AppLocalizations.of(context)!.reject,
+        style: theme.textTheme.labelLarge ?? uiConfig?.textTheme.labelLarge,
       ),
     );
   }
