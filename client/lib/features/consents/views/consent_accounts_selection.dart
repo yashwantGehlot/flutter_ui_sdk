@@ -7,6 +7,7 @@ import 'package:finvu_flutter_sdk/common/utils/ui_utils.dart';
 import 'package:finvu_flutter_sdk/common/widgets/finvu_fip_icon.dart';
 import 'package:finvu_flutter_sdk/features/account_linking/account_linking_page.dart';
 import 'package:finvu_flutter_sdk/features/consents/bloc/consent_bloc.dart';
+import 'package:finvu_flutter_sdk/finvu_manager.dart';
 import 'package:finvu_flutter_sdk_core/finvu_ui_initialization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -165,14 +166,15 @@ class _ConsentAccountsSelectionState extends State<ConsentAccountsSelection> {
           overflow: TextOverflow.ellipsis,
           style: theme.textTheme.bodyMedium?.copyWith(
                 fontWeight: FontWeight.w400,
+                color: FinvuUIManager().uiConfig?.primaryColor,
               ) ??
               uiConfig?.textTheme.bodyMedium?.copyWith(
                 fontWeight: FontWeight.w400,
               ) ??
-              const TextStyle(
+              TextStyle(
                 fontWeight: FontWeight.w400,
                 fontSize: 12,
-                color: FinvuColors.black111111,
+                color: FinvuUIManager().uiConfig?.currentColor,
               ),
         ),
         subtitle: Text(

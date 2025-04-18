@@ -123,16 +123,20 @@ class _MobileNumberOTPFormState extends State<MobileNumberOTPForm> {
         },
         child: Text(
           AppLocalizations.of(context)!.resendOtp,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            color: FinvuColors.blue,
-          ),
+          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: FinvuUIManager().uiConfig!.secondaryColor,
+                fontWeight: FontWeight.w400,
+              ),
         ),
       );
     }
 
     return Row(children: [
-      Text(AppLocalizations.of(context)!.resendOtpIn),
+      Text(AppLocalizations.of(context)!.resendOtpIn,
+          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: FinvuUIManager().uiConfig!.primaryColor,
+                fontWeight: FontWeight.w400,
+              )),
       const Padding(padding: EdgeInsets.only(right: 4)),
       Text(
         _resendOtpSecondsRemaining.toString(),

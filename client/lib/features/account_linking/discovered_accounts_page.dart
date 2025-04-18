@@ -191,7 +191,11 @@ class _DiscoveredAccountsPageState
                                         ),
                                         subtitle: Text(
                                           account.maskedAccountNumber,
-                                          style: theme.textTheme.bodyMedium,
+                                          style: theme.textTheme.bodyMedium
+                                              ?.copyWith(
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -241,7 +245,6 @@ class _DiscoveredAccountsPageState
                             unlinkedAccountsList.isEmpty
                                 ? AppLocalizations.of(context)!.okay
                                 : AppLocalizations.of(context)!.linkAccounts,
-                            style: theme.textTheme.labelLarge,
                           ),
                   ),
                 ),

@@ -114,7 +114,8 @@ class _SearchFipListState extends State<SearchFipList> {
               FocusManager.instance.primaryFocus?.unfocus(),
           onChanged: _filterSearchResults,
           controller: editingController,
-          style: theme.textTheme.bodyMedium,
+          style: theme.textTheme.bodyMedium
+              ?.copyWith(color: Theme.of(context).primaryColor),
           decoration: InputDecoration(
             isDense: true,
             filled: true,
@@ -170,7 +171,8 @@ class _SearchFipListState extends State<SearchFipList> {
                 Expanded(
                   child: Text(
                     fip.productName ?? "",
-                    style: theme.textTheme.bodyMedium,
+                    style: theme.textTheme.bodyMedium
+                        ?.copyWith(color: Theme.of(context).primaryColor),
                     textAlign: TextAlign.left,
                   ),
                 ),

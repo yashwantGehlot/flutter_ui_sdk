@@ -116,10 +116,6 @@ class _NextButtonState extends State<NextButton> {
                   },
                   child: Text(
                     AppLocalizations.of(builderContext)!.next,
-                    style: theme.textTheme.titleMedium?.copyWith(
-                        fontFamily: uiConfig?.fontFamily,
-                        fontWeight: FontWeight.w500,
-                        color: uiConfig!.currentColor),
                   ),
                 )
               : OutlinedButton(
@@ -135,10 +131,6 @@ class _NextButtonState extends State<NextButton> {
                   },
                   child: Text(
                     AppLocalizations.of(builderContext)!.next,
-                    style: theme.textTheme.labelLarge?.copyWith(
-                      fontFamily: uiConfig?.fontFamily,
-                      fontWeight: FontWeight.w500,
-                    ),
                   ),
                 ),
         );
@@ -200,8 +192,8 @@ class _NextButtonState extends State<NextButton> {
               TextSpan(
                 text: subTitle,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontFamily: FinvuUIManager().uiConfig?.fontFamily,
-                    ),
+                    fontFamily: FinvuUIManager().uiConfig?.fontFamily,
+                    color: FinvuUIManager().uiConfig?.primaryColor),
               ),
             ],
             content: const Image(

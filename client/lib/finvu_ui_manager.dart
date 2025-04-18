@@ -37,7 +37,7 @@ class FinvuUIManager {
   String? get appLocale => _appLocale;
 
   // Initialize method
-  void initialize({
+  Future<dynamic> initialize({
     required BuildContext buildContext,
     required SDKConfig sdkConfig,
     required FIUDetails fiuDetails,
@@ -61,7 +61,7 @@ class FinvuUIManager {
 
     final fontFamily = _uiConfig?.fontFamily ?? 'Roboto';
 
-    Navigator.push(
+    return Navigator.push(
       buildContext,
       MaterialPageRoute(
         fullscreenDialog: true,
