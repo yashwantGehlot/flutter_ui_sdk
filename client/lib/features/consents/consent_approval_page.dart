@@ -55,8 +55,7 @@ class _ConsentApprovalPageState extends State<ConsentApprovalPage> {
               ),
             ),
           );
-          Navigator.pushNamedAndRemoveUntil(
-            context,
+          Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil(
             '/', // Replace 'home' with the actual route name of the parent app's home page
             (route) => false,
           );
