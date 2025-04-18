@@ -17,7 +17,7 @@ class FinvuDialog extends StatelessWidget {
     super.key,
     required this.title,
     this.subtitle = const [],
-    required this.content,
+    this.content = const SizedBox.shrink(),
     this.onPressed,
     this.buttonText,
     this.isButtonLoading = false,
@@ -104,7 +104,8 @@ class FinvuDialog extends StatelessWidget {
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      child: Text(AppLocalizations.of(context)!.cancel),
+                      child: Text(
+                          AppLocalizations.of(context)?.cancel ?? 'cancel'),
                     ),
                   ),
                 ],

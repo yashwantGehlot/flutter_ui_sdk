@@ -7,24 +7,18 @@ sealed class LoginEvent extends Equatable {
   List<Object> get props => [];
 }
 
-final class InitializeEvent extends LoginEvent {}
-
-final class LoginAAHandleChanged extends LoginEvent {
-  const LoginAAHandleChanged(this.aaHandle);
-
+final class InitializeEvent extends LoginEvent {
+  final String mobileNumber;
   final String aaHandle;
+  final String consentHandleId;
+
+  const InitializeEvent(
+      {required this.mobileNumber,
+      required this.aaHandle,
+      required this.consentHandleId});
 
   @override
-  List<Object> get props => [aaHandle];
-}
-
-final class LoginPasscodeChanged extends LoginEvent {
-  const LoginPasscodeChanged(this.passcode);
-
-  final String passcode;
-
-  @override
-  List<Object> get props => [passcode];
+  List<Object> get props => [mobileNumber, aaHandle, consentHandleId];
 }
 
 final class LoginAAHandlePasscodeSubmitted extends LoginEvent {

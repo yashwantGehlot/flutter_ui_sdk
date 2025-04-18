@@ -6,8 +6,9 @@ import 'package:flutter/material.dart';
 
 class FinvuScaffold extends StatelessWidget {
   final Widget child;
+  final Widget? bottomSheet;
 
-  const FinvuScaffold({super.key, required this.child});
+  const FinvuScaffold({super.key, required this.child, this.bottomSheet});
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +22,7 @@ class FinvuScaffold extends StatelessWidget {
           ],
         ),
       ),
+      bottomSheet: bottomSheet,
     );
   }
 }

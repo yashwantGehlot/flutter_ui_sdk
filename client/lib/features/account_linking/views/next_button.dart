@@ -5,8 +5,10 @@ import 'package:finvu_flutter_sdk/features/account_linking/bloc/account_linking_
 import 'package:finvu_flutter_sdk/features/account_linking/models/identifier.dart';
 import 'package:finvu_flutter_sdk/features/account_linking/discovered_accounts_page.dart';
 import 'package:finvu_flutter_sdk/features/account_linking/widgets/add_new_mobile_number_dialog.dart';
+import 'package:finvu_flutter_sdk/features/account_linking/widgets/dob_input.dart';
 import 'package:finvu_flutter_sdk/features/account_linking/widgets/identifier_input_dialog.dart';
 import 'package:finvu_flutter_sdk/features/account_linking/views/no_accounts_found_page.dart';
+import 'package:finvu_flutter_sdk/finvu_ui_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:finvu_flutter_sdk/l10n/app_localizations.dart';
@@ -24,8 +26,11 @@ class _NextButtonState extends State<NextButton> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final uiConfig = FinvuUIManager().uiConfig;
+
     return BlocConsumer<AccountLinkingBloc, AccountLinkingState>(
-      listener: (context, state) async {
+      listener: (listnerContext, state) async {
         if (_enabled) {
           if (state.status == AccountLinkingStatus.isDiscoveringAccounts) {
             _showDiscoveringAccountsDialog(context);
@@ -40,6 +45,7 @@ class _NextButtonState extends State<NextButton> {
             );
           } else if (state.status == AccountLinkingStatus.didDiscoverAccounts) {
             _dismissDiscoveringAccountsDialog(context);
+            await Future.delayed(Duration.zero);
             if (state.discoveredAccounts.isNotEmpty) {
               Navigator.push(
                 context,
@@ -50,7 +56,7 @@ class _NextButtonState extends State<NextButton> {
                 ),
               );
             } else {
-              final result = await Navigator.push(
+              await Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => NoAccountsFoundPage(
@@ -95,24 +101,46 @@ class _NextButtonState extends State<NextButton> {
           return const SizedBox.shrink();
         }
         return Container(
-          margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-          child: ElevatedButton(
-            style: ButtonStyle(
-              minimumSize:
-                  const WidgetStatePropertyAll(Size(double.infinity, 50)),
-              shape: WidgetStatePropertyAll(
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-              ),
-              backgroundColor: const WidgetStatePropertyAll(FinvuColors.blue),
-              foregroundColor: const WidgetStatePropertyAll(Colors.white),
-            ),
-            onPressed: () {
-              context
-                  .read<AccountLinkingBloc>()
-                  .add(const AccountLinkingDiscoveryInitiated());
-            },
-            child: Text(AppLocalizations.of(builderContext)!.next),
-          ),
+          margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+          child: uiConfig?.isElevatedButton ?? true
+              ? ElevatedButton(
+                  style: theme.elevatedButtonTheme.style?.copyWith(
+                    minimumSize: MaterialStateProperty.all(
+                      const Size(double.infinity, 50),
+                    ),
+                  ),
+                  onPressed: () {
+                    context
+                        .read<AccountLinkingBloc>()
+                        .add(const AccountLinkingDiscoveryInitiated());
+                  },
+                  child: Text(
+                    AppLocalizations.of(builderContext)!.next,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                        fontFamily: uiConfig?.fontFamily,
+                        fontWeight: FontWeight.w500,
+                        color: uiConfig!.currentColor),
+                  ),
+                )
+              : OutlinedButton(
+                  style: theme.outlinedButtonTheme.style?.copyWith(
+                    minimumSize: MaterialStateProperty.all(
+                      const Size(double.infinity, 50),
+                    ),
+                  ),
+                  onPressed: () {
+                    context
+                        .read<AccountLinkingBloc>()
+                        .add(const AccountLinkingDiscoveryInitiated());
+                  },
+                  child: Text(
+                    AppLocalizations.of(builderContext)!.next,
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      fontFamily: uiConfig?.fontFamily,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
         );
       },
     );
@@ -140,7 +168,7 @@ class _NextButtonState extends State<NextButton> {
 
   void _dismissDiscoveringAccountsDialog(BuildContext context) {
     if (_isShowingDiscoveringAccountsDialog) {
-      Navigator.pop(context);
+      Navigator.of(context, rootNavigator: true).pop();
       setState(() {
         _isShowingDiscoveringAccountsDialog = false;
       });
@@ -155,22 +183,32 @@ class _NextButtonState extends State<NextButton> {
     setState(() {
       _isShowingDiscoveringAccountsDialog = true;
     });
-
+    final accountLinkingBloc = context.read<AccountLinkingBloc>();
+    final title = AppLocalizations.of(context)!.approachingYourBank;
+    final subTitle = AppLocalizations.of(context)!.sitBackAndRelax;
     showDialog(
       barrierDismissible: false,
       context: context,
       builder: (_) {
         return BlocProvider.value(
-          value: context.read<AccountLinkingBloc>(),
+          value: accountLinkingBloc,
           child: FinvuDialog(
             dismissible: false,
             textAlign: TextAlign.center,
-            title: AppLocalizations.of(context)!.approachingYourBank,
+            title: title,
             subtitle: [
-              TextSpan(text: AppLocalizations.of(context)!.sitBackAndRelax),
+              TextSpan(
+                text: subTitle,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontFamily: FinvuUIManager().uiConfig?.fontFamily,
+                    ),
+              ),
             ],
-            content: Image.asset(
-              "lib/assets/finvu_discovering_accounts.png",
+            content: const Image(
+              image: AssetImage(
+                "lib/assets/finvu_discovering_accounts.png",
+                package: 'finvu_flutter_sdk',
+              ),
             ),
             onPressed: null,
           ),
@@ -183,17 +221,28 @@ class _NextButtonState extends State<NextButton> {
     BuildContext context,
     Identifier identifier,
   ) {
+    final accountLinkingBloc = context.read<AccountLinkingBloc>();
+    final localizations = AppLocalizations.of(context);
+
     showDialog(
       barrierDismissible: false,
       context: context,
       builder: (_) {
         return BlocProvider.value(
-          value: context.read<AccountLinkingBloc>(),
+          value: accountLinkingBloc,
           child: IdentifierInputDialog(
             identifier: identifier,
+            localizations: localizations!,
           ),
         );
       },
+    );
+
+    DoBInput(
+      onChanged: (value) {
+        // Handle the date of birth value
+      },
+      localizations: localizations!,
     );
   }
 }

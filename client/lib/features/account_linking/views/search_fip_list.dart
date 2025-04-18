@@ -37,6 +37,9 @@ class _SearchFipListState extends State<SearchFipList> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final uiConfig = FinvuUIManager().uiConfig;
+
     return BlocConsumer<AccountLinkingBloc, AccountLinkingState>(
       listener: (context, state) {
         if (state.status == AccountLinkingStatus.initializingComplete) {
@@ -61,9 +64,8 @@ class _SearchFipListState extends State<SearchFipList> {
           return const SizedBox.shrink();
         }
 
-        final List<FinvuFIPInfo> items = _filteredFips != null
-            ? _filteredFips!
-            : _getSelectedFiTypeCategoryFips();
+        final List<FinvuFIPInfo> items =
+            _filteredFips ?? _getSelectedFiTypeCategoryFips();
         return Column(children: [
           _buildSearchBankHeader(context),
           const Padding(padding: EdgeInsets.only(top: 15)),
@@ -75,12 +77,8 @@ class _SearchFipListState extends State<SearchFipList> {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: items.length,
-            itemBuilder: (context, index) {
-              return _buildRadioButtonWidget(
-                context,
-                items[index],
-              );
-            },
+            itemBuilder: (context, index) =>
+                _buildRadioButtonWidget(context, items[index]),
           ),
         ]);
       },
@@ -88,20 +86,22 @@ class _SearchFipListState extends State<SearchFipList> {
   }
 
   Widget _buildSearchBankHeader(BuildContext context) {
+    final theme = Theme.of(context);
     return Align(
       alignment: Alignment.centerLeft,
       child: Text(
-        style: const TextStyle(
-          fontWeight: FontWeight.w900,
-          fontSize: 16,
-          color: Colors.black,
-        ),
         AppLocalizations.of(context)!.searchInstitution,
+        style: theme.textTheme.titleMedium?.copyWith(
+          fontWeight: FontWeight.w900,
+        ),
       ),
     );
   }
 
   Widget _buildSearchBarWidget(BuildContext context) {
+    final theme = Theme.of(context);
+    final uiConfig = FinvuUIManager().uiConfig;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5),
       child: Material(
@@ -110,88 +110,79 @@ class _SearchFipListState extends State<SearchFipList> {
         ),
         elevation: 1,
         child: TextField(
-          onTapOutside: (event) {
-            FocusManager.instance.primaryFocus?.unfocus();
-          },
-          onChanged: (value) {
-            _filterSearchResults(value);
-          },
+          onTapOutside: (event) =>
+              FocusManager.instance.primaryFocus?.unfocus(),
+          onChanged: _filterSearchResults,
           controller: editingController,
-          decoration: (() {
-            final theme = FinvuUIManager().uiConfig?.inputDecorationTheme ??
-                Theme.of(context).inputDecorationTheme;
-
-            return InputDecoration(
-              isDense: true,
-              filled: true,
-              fillColor: Colors.white.withAlpha(1),
-              labelText: AppLocalizations.of(context)!.searchInstitution,
-              hintText: AppLocalizations.of(context)!.searchInstitution,
-              suffixIcon: const Icon(Icons.search),
-              enabledBorder: theme.enabledBorder ??
-                  const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                    borderSide: BorderSide.none,
-                  ),
-              focusedBorder: theme.focusedBorder ??
-                  const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                    borderSide: BorderSide(color: FinvuColors.blue, width: 2),
-                  ),
-              border: theme.border ??
-                  const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                    borderSide: BorderSide.none,
-                  ),
-              labelStyle: theme.labelStyle,
-              hintStyle: theme.hintStyle,
-              contentPadding: theme.contentPadding,
-            );
-          })(),
+          style: theme.textTheme.bodyMedium,
+          decoration: InputDecoration(
+            isDense: true,
+            filled: true,
+            fillColor: Colors.white.withAlpha(1),
+            labelText: AppLocalizations.of(context)!.searchInstitution,
+            hintText: AppLocalizations.of(context)!.searchInstitution,
+            suffixIcon: Icon(Icons.search, color: uiConfig?.primaryColor),
+            enabledBorder: uiConfig?.inputDecorationTheme?.enabledBorder ??
+                theme.inputDecorationTheme.enabledBorder,
+            focusedBorder: uiConfig?.inputDecorationTheme?.focusedBorder ??
+                theme.inputDecorationTheme.focusedBorder,
+            border: uiConfig?.inputDecorationTheme?.border ??
+                theme.inputDecorationTheme.border,
+            labelStyle: uiConfig?.inputDecorationTheme?.labelStyle ??
+                theme.inputDecorationTheme.labelStyle,
+            hintStyle: uiConfig?.inputDecorationTheme?.hintStyle ??
+                theme.inputDecorationTheme.hintStyle,
+            contentPadding: uiConfig?.inputDecorationTheme?.contentPadding ??
+                theme.inputDecorationTheme.contentPadding,
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildRadioButtonWidget(
-    BuildContext context,
-    FinvuFIPInfo fip,
-  ) {
+  Widget _buildRadioButtonWidget(BuildContext context, FinvuFIPInfo fip) {
+    final theme = Theme.of(context);
+    final uiConfig = FinvuUIManager().uiConfig;
+
     return Card(
       surfaceTintColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+        side: BorderSide(color: theme.dividerColor.withOpacity(0.1)),
+      ),
       child: InkWell(
-        onTap: () {
-          _handleRadioButtonChanged(context, fip);
-        },
+        onTap: () => _handleRadioButtonChanged(context, fip),
+        borderRadius: BorderRadius.circular(10),
         child: SizedBox(
           width: double.infinity,
           height: 50,
           child: Center(
-              child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 12, right: 12),
-                child: FinvuFipIcon(
-                  iconUri: fip.productIconUri,
-                  size: 22,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: FinvuFipIcon(
+                    iconUri: fip.productIconUri,
+                    size: 22,
+                  ),
                 ),
-              ),
-              Expanded(
-                child: Text(
-                  textAlign: TextAlign.left,
-                  fip.productName ?? "",
-                  style: const TextStyle(fontSize: 14),
+                Expanded(
+                  child: Text(
+                    fip.productName ?? "",
+                    style: theme.textTheme.bodyMedium,
+                    textAlign: TextAlign.left,
+                  ),
                 ),
-              ),
-              Radio<FinvuFIPInfo>(
-                value: fip,
-                groupValue: _selectedFip,
-                onChanged: (FinvuFIPInfo? value) =>
-                    _handleRadioButtonChanged(context, fip),
-              ),
-            ],
-          )),
+                Radio<FinvuFIPInfo>(
+                  value: fip,
+                  groupValue: _selectedFip,
+                  onChanged: (value) => _handleRadioButtonChanged(context, fip),
+                  activeColor: uiConfig?.primaryColor,
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -238,6 +229,8 @@ class _SearchFipListState extends State<SearchFipList> {
   }
 
   Widget _buildInstitutionTypeSelectionWidget(BuildContext context) {
+    final uiConfig = FinvuUIManager().uiConfig;
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
@@ -255,20 +248,21 @@ class _SearchFipListState extends State<SearchFipList> {
                       borderRadius: BorderRadius.circular(10),
                       side: BorderSide(
                         color: _selectedFiTypeCategoryIndex == index
-                            ? FinvuColors.blue
+                            ? uiConfig?.primaryColor ?? FinvuColors.blue
                             : FinvuColors.greyD8E1EE,
                       ),
                     ),
                     backgroundColor: _selectedFiTypeCategoryIndex == index
-                        ? FinvuColors.blue
+                        ? uiConfig?.primaryColor
                         : null,
                     label: Text(
+                      fiTypeCategory.getLocalizedTitle(context),
                       style: TextStyle(
                         color: _selectedFiTypeCategoryIndex == index
                             ? Colors.white
                             : null,
+                        fontFamily: uiConfig?.fontFamily,
                       ),
-                      fiTypeCategory.getLocalizedTitle(context),
                     ),
                   ),
                 ),

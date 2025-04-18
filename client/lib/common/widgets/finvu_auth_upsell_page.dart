@@ -26,7 +26,8 @@ class FinvuAuthUpsellPage extends StatelessWidget {
                 children: [
                   const Padding(padding: EdgeInsets.only(top: 25)),
                   const Image(
-                    image: AssetImage('lib/assets/finvu_logo.png'),
+                    image: AssetImage('lib/assets/finvu_logo.png',
+                        package: 'finvu_flutter_sdk'),
                     width: 120,
                   ),
                   const Padding(padding: EdgeInsets.only(top: 30)),

@@ -51,7 +51,7 @@ class FinvuUIManager {
       context,
       MaterialPageRoute(
         builder: (context) => FinvuApp(
-          consentHandleId: loginConfig.consentHandle,
+          consentHandleId: loginConfig.consentHandleId,
           mobileNumber: loginConfig.mobileNumber,
           environment: environment,
         ),

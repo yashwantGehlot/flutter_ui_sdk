@@ -18,6 +18,8 @@ class OtpInputDialogState extends State<MobileVerificatioDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return BlocBuilder<AccountLinkingBloc, AccountLinkingState>(
         builder: (context, state) {
       return FinvuDialog(
@@ -25,13 +27,17 @@ class OtpInputDialogState extends State<MobileVerificatioDialog> {
         subtitle: [
           TextSpan(
             text: AppLocalizations.of(context)!.verifyOtp,
+            style: theme.textTheme.bodyMedium,
           ),
         ],
-        content: OtpInput(onChanged: (otp) {
-          setState(() {
-            _otp = otp;
-          });
-        }),
+        content: OtpInput(
+          onChanged: (otp) {
+            setState(() {
+              _otp = otp;
+            });
+          },
+          localizations: AppLocalizations.of(context)!,
+        ),
         buttonText: AppLocalizations.of(context)!.submit,
         onPressed: () {
           if (_otp.isNotEmpty) {

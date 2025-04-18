@@ -10,7 +10,6 @@ class FinvuPageHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 108,
       child: DecoratedBox(
         decoration: const BoxDecoration(color: FinvuColors.darkBlue),
         child: Padding(
