@@ -123,7 +123,7 @@ class _AccountsPageState extends BasePageState<AccountsPage> {
       context,
       MaterialPageRoute(
         builder: (context) => BlocProvider(
-          create: (_) => ConsentBloc(),
+          create: (_) => ConsentBloc()..add(const LinkedAccountsRefresh()),
           child: const ConsentApprovalPage(),
         ),
       ),

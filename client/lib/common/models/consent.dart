@@ -14,7 +14,7 @@ enum ConsentType {
 class ConsentDetails extends FinvuConsentInfoDetails {
   FinvuConsentRequestDetailInfo? consentRequestDetailInfo;
   FinvuConsentInfoDetails? consentInfoDetails;
-  FinvuEntityInfo entityInfo;
+  FinvuEntityInfo? entityInfo;
 
   ConsentDetails.fromConsentRequestDetailInfo(
     FinvuConsentRequestDetailInfo this.consentRequestDetailInfo,

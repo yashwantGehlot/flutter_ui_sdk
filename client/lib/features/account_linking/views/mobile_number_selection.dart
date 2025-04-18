@@ -1,6 +1,7 @@
 import 'package:finvu_flutter_sdk/features/account_linking/bloc/account_linking_bloc.dart';
 import 'package:finvu_flutter_sdk/features/account_linking/widgets/add_new_mobile_number_dialog.dart';
 import 'package:finvu_flutter_sdk/features/account_linking/widgets/mobile_verification_dialog.dart';
+import 'package:finvu_flutter_sdk/finvu_ui_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:finvu_flutter_sdk/l10n/app_localizations.dart';
@@ -14,8 +15,9 @@ class MobileNumberSelection extends StatelessWidget {
       builder: (context, state) {
         if (state.status == AccountLinkingStatus.isInitializing ||
             state.status == AccountLinkingStatus.unknown) {
-          return const Center(
-            child: CircularProgressIndicator(),
+          return Center(
+            child: FinvuUIManager().uiConfig?.loderWidget ??
+                const CircularProgressIndicator(),
           );
         }
 

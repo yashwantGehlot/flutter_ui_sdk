@@ -4,6 +4,7 @@ import 'package:finvu_flutter_sdk/common/widgets/base_page.dart';
 import 'package:finvu_flutter_sdk/common/widgets/finvu_dialog.dart';
 import 'package:finvu_flutter_sdk/features/auth/login/login_page.dart';
 import 'package:finvu_flutter_sdk/features/splash/bloc/splash_bloc.dart';
+import 'package:finvu_flutter_sdk/finvu_ui_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:finvu_flutter_sdk/l10n/app_localizations.dart';
@@ -53,8 +54,9 @@ class _SplashPageState extends BasePageState<SplashPage> {
               return;
             }
           },
-          child: const Center(
-            child: CircularProgressIndicator(),
+          child: Center(
+            child: FinvuUIManager().uiConfig?.loderWidget ??
+                const CircularProgressIndicator(),
           ),
         ),
       ),

@@ -6,6 +6,7 @@ import 'package:finvu_flutter_sdk/common/widgets/finvu_dialog.dart';
 import 'package:finvu_flutter_sdk/features/accounts/accounts_page.dart';
 import 'package:finvu_flutter_sdk/features/auth/login/bloc/login_bloc.dart';
 import 'package:finvu_flutter_sdk/common/utils/finvu_colors.dart';
+import 'package:finvu_flutter_sdk/finvu_ui_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:finvu_flutter_sdk/l10n/app_localizations.dart';
@@ -75,8 +76,9 @@ class _MobileNumberOTPFormState extends State<MobileNumberOTPForm> {
               (state.mobileNumber.isEmpty &&
                   state.aaHandle.isEmpty &&
                   state.consentHandleId.isEmpty))) {
-        return const Center(
-          child: CircularProgressIndicator(),
+        return Center(
+          child: FinvuUIManager().uiConfig?.loderWidget ??
+              const CircularProgressIndicator(),
         );
       }
       final List<Widget> children = [];
@@ -167,9 +169,10 @@ class _SubmitButton extends StatelessWidget {
     return BlocBuilder<LoginBloc, LoginState>(
       builder: (context, state) {
         if (state.status == LoginStatus.isAuthenticatingOtp) {
-          return const Align(
+          return Align(
             alignment: Alignment.center,
-            child: CircularProgressIndicator(),
+            child: FinvuUIManager().uiConfig?.loderWidget ??
+                const CircularProgressIndicator(),
           );
         }
 
