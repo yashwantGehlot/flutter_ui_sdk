@@ -38,12 +38,14 @@ class FinvuUIManager {
     required Environment environment,
     FinvuUIConfig? uiConfig,
     List<FinvuFIPDetails>? fipDetailsList,
+    String? appLocale,
   }) {
     _sdkConfig = sdkConfig;
     _fiuDetails = fiuDetails;
     _loginConfig = loginConfig;
     _fipDetailsList = fipDetailsList;
     _uiConfig = uiConfig ?? _getDefaultUIConfig();
+    _appLocale = appLocale;
 
     Navigator.push(
       context,

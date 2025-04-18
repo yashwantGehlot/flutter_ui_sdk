@@ -33,7 +33,7 @@ enum FinvuButtonStyleType {
 
 class _FinvuAppState extends State<FinvuApp> {
   bool _loadedFonts = false;
-
+  Locale? _sdkLocale;
   Future<void> _loadFonts() async {
     final fontFamily = FinvuUIManager().uiConfig?.fontFamily ?? 'Roboto';
     final fontLoader = FontLoader(fontFamily);
@@ -48,6 +48,16 @@ class _FinvuAppState extends State<FinvuApp> {
     super.initState();
     FinvuAppConfig.initialize(widget.environment);
     _loadFonts();
+    _loadLocale();
+  }
+
+  void _loadLocale() {
+    final localeStr = FinvuUIManager().appLocale;
+    if (localeStr != null) {
+      _sdkLocale = Locale(localeStr);
+    } else {
+      _sdkLocale = widget.locale;
+    }
   }
 
   @override
@@ -64,7 +74,7 @@ class _FinvuAppState extends State<FinvuApp> {
     }
 
     return BlocProvider(
-      create: (context) => LanguageCubit()..initialize(),
+      create: (context) => LanguageCubit()..initialize(locale: _sdkLocale),
       child: BlocBuilder<LanguageCubit, Locale?>(
         builder: (context, locale) {
           return WillPopScope(
