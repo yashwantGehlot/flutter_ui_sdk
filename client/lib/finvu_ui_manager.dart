@@ -1,9 +1,16 @@
-import 'package:finvu_flutter_sdk/app.dart';
 import 'package:finvu_flutter_sdk/common/utils/finvu_colors.dart';
+import 'package:finvu_flutter_sdk/common/widgets/exit_dialog.dart';
+import 'package:finvu_flutter_sdk/common/widgets/finvu_scaffold.dart';
 import 'package:finvu_flutter_sdk/config/finvu_app_config.dart';
+import 'package:finvu_flutter_sdk/features/language/language_cubit.dart';
+import 'package:finvu_flutter_sdk/features/splash/splash_page.dart';
+import 'package:finvu_flutter_sdk/l10n/app_localizations.dart';
 import 'package:finvu_flutter_sdk_core/finvu_fip_details.dart';
 import 'package:finvu_flutter_sdk_core/finvu_ui_initialization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 class FinvuUIManager {
   static final FinvuUIManager instance = FinvuUIManager._internal();
@@ -31,7 +38,7 @@ class FinvuUIManager {
 
   // Initialize method
   void initialize({
-    required BuildContext context,
+    required BuildContext buildContext,
     required SDKConfig sdkConfig,
     required FIUDetails fiuDetails,
     required LoginConfig loginConfig,
@@ -39,6 +46,7 @@ class FinvuUIManager {
     FinvuUIConfig? uiConfig,
     List<FinvuFIPDetails>? fipDetailsList,
     String? appLocale,
+    Locale? locale,
   }) {
     _sdkConfig = sdkConfig;
     _fiuDetails = fiuDetails;
@@ -47,14 +55,68 @@ class FinvuUIManager {
     _uiConfig = uiConfig ?? _getDefaultUIConfig();
     _appLocale = appLocale;
 
+    final sdkLocale = _appLocale != null ? Locale(_appLocale!) : locale;
+
+    FinvuAppConfig.initialize(environment);
+
+    final fontFamily = _uiConfig?.fontFamily ?? 'Roboto';
+
     Navigator.push(
-      context,
+      buildContext,
       MaterialPageRoute(
-        builder: (context) => FinvuApp(
-          consentHandleId: loginConfig.consentHandleId,
-          mobileNumber: loginConfig.mobileNumber,
-          environment: environment,
-        ),
+        fullscreenDialog: true,
+        builder: (context) {
+          return FutureBuilder(
+            future: FontLoader(fontFamily).load(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState != ConnectionState.done) {
+                return MaterialApp(
+                  theme: getAppTheme(),
+                  home: const Scaffold(
+                    body: Center(child: CircularProgressIndicator()),
+                  ),
+                );
+              }
+
+              return BlocProvider(
+                create: (_) => LanguageCubit()..initialize(locale: sdkLocale),
+                child: BlocBuilder<LanguageCubit, Locale?>(
+                  builder: (context, locale) {
+                    return WillPopScope(
+                      onWillPop: () async {
+                        final shouldExit = await exitDialog(context);
+                        return shouldExit;
+                      },
+                      child: MaterialApp(
+                        title: 'Finvu',
+                        theme: getAppTheme(),
+                        localizationsDelegates: const [
+                          AppLocalizations.delegate,
+                          GlobalMaterialLocalizations.delegate,
+                          GlobalWidgetsLocalizations.delegate,
+                          GlobalCupertinoLocalizations.delegate,
+                        ],
+                        supportedLocales: AppLocalizations.supportedLocales,
+                        locale: locale,
+                        home: Scaffold(
+                          appBar: FinvuHeader(
+                            onExit: () async {
+                              final shouldExit = await exitDialog(context);
+                              if (shouldExit) {
+                                Navigator.of(buildContext).pop();
+                              }
+                            },
+                          ),
+                          body: const SplashPage(),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }

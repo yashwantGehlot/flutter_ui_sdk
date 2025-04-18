@@ -44,6 +44,11 @@ class _LoginPageState extends State<LoginPage> {
     final consentHandleId = FinvuUIManager.instance.loginConfig.consentHandleId;
 
     return Scaffold(
+      appBar: FinvuHeader(
+        onExit: () {
+          Navigator.of(context).pop();
+        },
+      ),
       body: SafeArea(
         child: FinvuScaffold(
           child: Padding(
@@ -79,7 +84,6 @@ class _LoginPageState extends State<LoginPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const FinvuAuthHeader(),
                       getForm(),
                       const Padding(padding: EdgeInsets.only(top: 30)),
                     ],
