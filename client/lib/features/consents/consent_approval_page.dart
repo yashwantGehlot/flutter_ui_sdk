@@ -7,7 +7,6 @@ import 'package:finvu_flutter_sdk/common/widgets/base_page.dart';
 import 'package:finvu_flutter_sdk/common/widgets/finvu_page_header.dart';
 import 'package:finvu_flutter_sdk/features/consents/bloc/consent_bloc.dart';
 import 'package:finvu_flutter_sdk/features/consents/views/consent_accounts_selection.dart';
-import 'package:finvu_flutter_sdk/features/consents/views/pending_consent_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:finvu_flutter_sdk/l10n/app_localizations.dart';
@@ -70,9 +69,8 @@ class _ConsentApprovalPageState extends State<ConsentApprovalPage> {
                 padding: const EdgeInsets.all(20),
                 child: Column(
                   children: [
-                    ConsentAccountsSelection(consent: state.consent!.con),
+                    // ConsentAccountsSelection(consent: state.consent!.con),
                     const SizedBox(height: 20),
-                    PendingConsentDetails(consent: widget.consent),
                   ],
                 ),
               ),
