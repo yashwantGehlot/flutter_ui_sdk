@@ -5,7 +5,6 @@ import 'package:finvu_flutter_sdk/common/utils/finvu_colors.dart';
 import 'package:finvu_flutter_sdk/common/widgets/finvu_fip_icon.dart';
 import 'package:finvu_flutter_sdk/features/accounts/bloc/accounts_bloc.dart';
 import 'package:finvu_flutter_sdk/common/models/linked_account_with_fip.dart';
-import 'package:finvu_flutter_sdk/features/accounts/linked_account_details_page.dart';
 import 'package:finvu_flutter_sdk/features/accounts/widgets/account_activity_dialog.dart';
 import 'package:finvu_flutter_sdk/features/accounts/widgets/account_delink_dialog.dart';
 import 'package:finvu_flutter_sdk/finvu_ui_manager.dart';
@@ -230,13 +229,5 @@ class AccountsList extends StatelessWidget {
         child: AccountDelinkDialog(account: account),
       ),
     );
-  }
-
-  void _goToAccountDetailsPage(
-      BuildContext context, final LinkedAccountInfo account) async {
-    final route = MaterialPageRoute(
-      builder: (_) => LinkedAccountsDetailsPage(account: account),
-    );
-    Navigator.push(context, route);
   }
 }

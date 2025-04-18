@@ -47,8 +47,6 @@ class _ConsentAccountsSelectionState extends State<ConsentAccountsSelection> {
                 _buildHeaderWidget(context, state.linkedAccounts),
                 const SizedBox(height: 5),
                 _buildAccountsListWidget(state.linkedAccounts),
-                const SizedBox(height: 5),
-                _buildAddMoreAccountsButtonWidget(context),
                 const SizedBox(height: 15),
                 _buildApproveConsentButton(context, state.status),
                 const SizedBox(height: 15),

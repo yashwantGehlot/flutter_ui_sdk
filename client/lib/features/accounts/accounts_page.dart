@@ -9,6 +9,8 @@ import 'package:finvu_flutter_sdk/features/account_linking/account_linking_page.
 import 'package:finvu_flutter_sdk/features/accounts/bloc/accounts_bloc.dart';
 import 'package:finvu_flutter_sdk/features/accounts/views/accounts_list.dart';
 import 'package:finvu_flutter_sdk/common/widgets/account_add_upsell_banner.dart';
+import 'package:finvu_flutter_sdk/features/consents/bloc/consent_bloc.dart';
+import 'package:finvu_flutter_sdk/features/consents/consent_approval_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:finvu_flutter_sdk/l10n/app_localizations.dart';
@@ -28,6 +30,8 @@ class AccountsPage extends BasePage {
 class _AccountsPageState extends BasePageState<AccountsPage> {
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return BlocProvider(
       create: (_) => AccountsBloc()..add(const AccountsRefresh()),
       child: BlocConsumer<AccountsBloc, AccountsState>(
@@ -40,6 +44,7 @@ class _AccountsPageState extends BasePageState<AccountsPage> {
                 SnackBar(
                   content: Text(
                     ErrorUtils.getErrorMessage(context, state.error),
+                    style: theme.textTheme.bodyMedium,
                   ),
                 ),
               );
@@ -47,29 +52,47 @@ class _AccountsPageState extends BasePageState<AccountsPage> {
           }
         },
         builder: (context, state) {
-          return SafeArea(
-            child: FinvuScaffold(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.only(top: 30),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20, right: 20),
-                      child: Column(
-                        children: [
-                          AccountsList(
-                            onPressedAddAccount: (category) =>
-                                _goToAccountLinkingPage(context, category),
+          return FinvuScaffold(
+            child: Stack(
+              alignment: Alignment.bottomCenter,
+              children: [
+                SafeArea(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.only(top: 30),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Column(
+                            children: [
+                              AccountsList(
+                                onPressedAddAccount: (category) =>
+                                    _goToAccountLinkingPage(context, category),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(height: 100), // Space for the button
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
+                Container(
+                  margin: const EdgeInsets.all(20),
+                  child: ElevatedButton(
+                    style: theme.elevatedButtonTheme.style,
+                    onPressed: () {
+                      _goToConsentApprovalPage(context);
+                    },
+                    child: Text(
+                      AppLocalizations.of(context)!.approveConsent,
+                    ),
+                  ),
+                ),
+              ],
             ),
           );
         },
@@ -93,5 +116,17 @@ class _AccountsPageState extends BasePageState<AccountsPage> {
         context.read<AccountsBloc>().add(const AccountsRefresh());
       }
     }
+  }
+
+  void _goToConsentApprovalPage(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BlocProvider(
+          create: (_) => ConsentBloc(),
+          child: const ConsentApprovalPage(),
+        ),
+      ),
+    );
   }
 }

@@ -4,12 +4,14 @@ sealed class ConsentEvent {
   const ConsentEvent();
 }
 
-final class ConsentsRefresh extends ConsentEvent {
-  const ConsentsRefresh();
-}
-
 final class LinkedAccountsRefresh extends ConsentEvent {
   const LinkedAccountsRefresh();
+}
+
+final class FetchConsentDetails extends ConsentEvent {
+  const FetchConsentDetails({required this.consentHandleId});
+
+  final String consentHandleId;
 }
 
 final class ConsentApprove extends ConsentEvent {
@@ -30,18 +32,6 @@ final class ConsentReject extends ConsentEvent {
 
 final class ConsentRevoke extends ConsentEvent {
   const ConsentRevoke({required this.consent});
-
-  final ConsentDetails consent;
-}
-
-final class SelfConsentRequest extends ConsentEvent {
-  const SelfConsentRequest({required this.selfConsentDetails});
-
-  final SelfConsentDetails selfConsentDetails;
-}
-
-final class ConsentHistory extends ConsentEvent {
-  const ConsentHistory({required this.consent});
 
   final ConsentDetails consent;
 }
