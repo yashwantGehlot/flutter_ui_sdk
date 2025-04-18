@@ -61,7 +61,7 @@ class FinvuHeader extends StatelessWidget implements PreferredSizeWidget {
             final shouldExit = await exitDialog(context);
             if (shouldExit) {
               // ✅ This will always pop the root FinvuApp from the stack
-              Navigator.of(context, rootNavigator: true).pop();
+              Navigator.of(context, rootNavigator: true).pop(false);
 
               // Optionally still call onExit if parent needs to handle something
               onExit?.call();

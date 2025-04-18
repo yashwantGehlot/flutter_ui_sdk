@@ -72,9 +72,6 @@ class AccountAddUpsellBanner extends StatelessWidget {
                               onPressed: onPressedAddAccount,
                               child: Text(
                                 AppLocalizations.of(context)!.addNow,
-                                style: TextStyle(
-                                  fontFamily: uiConfig?.fontFamily,
-                                ),
                               ),
                             )
                           else

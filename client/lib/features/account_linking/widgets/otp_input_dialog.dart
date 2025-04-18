@@ -7,6 +7,8 @@ import 'package:finvu_flutter_sdk/common/utils/remote_config_service.dart';
 import 'package:finvu_flutter_sdk/common/widgets/finvu_dialog.dart';
 import 'package:finvu_flutter_sdk/common/widgets/otp_input.dart';
 import 'package:finvu_flutter_sdk/features/account_linking/bloc/account_linking_bloc.dart';
+import 'package:finvu_flutter_sdk/finvu_manager.dart';
+import 'package:finvu_flutter_sdk/finvu_ui_manager.dart';
 import 'package:finvu_flutter_sdk_core/finvu_discovered_accounts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -79,7 +81,9 @@ class OtpInputDialogState extends State<OtpInputDialog> {
         subtitle: [
           TextSpan(
             text: widget.localizations.verifyOtp,
-            style: theme.textTheme.bodyMedium,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: FinvuUIManager().uiConfig?.currentColor,
+            ),
           ),
         ],
         content: Column(
@@ -144,9 +148,9 @@ class OtpInputDialogState extends State<OtpInputDialog> {
             },
             child: Text(
               widget.localizations.resendOtp,
-              style: theme.textTheme.bodyMedium?.copyWith(
+              style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: theme.colorScheme.primary,
+                color: FinvuUIManager().uiConfig?.primaryColor,
               ),
             ),
           ),
@@ -158,7 +162,10 @@ class OtpInputDialogState extends State<OtpInputDialog> {
     return Row(children: [
       Text(
         widget.localizations.resendOtpIn,
-        style: theme.textTheme.bodyMedium,
+        style: TextStyle(
+          fontWeight: FontWeight.w500,
+          color: FinvuUIManager().uiConfig?.primaryColor,
+        ),
       ),
       const Padding(padding: EdgeInsets.only(right: 4)),
       Text(

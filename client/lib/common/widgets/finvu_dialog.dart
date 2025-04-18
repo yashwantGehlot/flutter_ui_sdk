@@ -1,4 +1,5 @@
 import 'package:finvu_flutter_sdk/common/utils/finvu_colors.dart';
+import 'package:finvu_flutter_sdk/finvu_manager.dart';
 import 'package:finvu_flutter_sdk/finvu_ui_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:finvu_flutter_sdk/l10n/app_localizations.dart';
@@ -52,9 +53,10 @@ class FinvuDialog extends StatelessWidget {
                 Expanded(
                   child: Text(
                     title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20.0,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w900,
+                      fontSize: 16,
+                      color: FinvuUIManager().uiConfig?.currentColor,
                     ),
                   ),
                 ),
@@ -81,7 +83,9 @@ class FinvuDialog extends StatelessWidget {
                       ? Align(
                           alignment: Alignment.center,
                           child: FinvuUIManager().uiConfig?.loderWidget ??
-                              const CircularProgressIndicator(),
+                              CircularProgressIndicator(
+                                color: FinvuUIManager().uiConfig?.primaryColor,
+                              ),
                         )
                       : SizedBox(
                           width: double.infinity,

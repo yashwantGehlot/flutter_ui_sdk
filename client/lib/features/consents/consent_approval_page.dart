@@ -36,7 +36,7 @@ class _ConsentApprovalPageState extends State<ConsentApprovalPage> {
     final theme = Theme.of(context);
 
     return BlocConsumer<ConsentBloc, ConsentState>(
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state.status == ConsentStatus.linkedAccountsFetched) {
           context.read<ConsentBloc>().add(
                 FetchConsentDetails(
@@ -55,9 +55,9 @@ class _ConsentApprovalPageState extends State<ConsentApprovalPage> {
               ),
             ),
           );
-          Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil(
-            '/', // Replace 'home' with the actual route name of the parent app's home page
-            (route) => false,
+          await Future.delayed(const Duration(seconds: 1));
+          Navigator.of(context, rootNavigator: true).pop(
+            state.status == ConsentStatus.consentApproved,
           );
         } else if (state.status == ConsentStatus.error) {
           ScaffoldMessenger.of(context).showSnackBar(
