@@ -8,7 +8,6 @@ import 'package:finvu_flutter_sdk/finvu_ui_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:finvu_flutter_sdk/l10n/app_localizations.dart';
-import 'package:otpless_flutter/otpless_flutter.dart';
 
 class SplashPage extends BasePage {
   const SplashPage({super.key});
@@ -32,8 +31,6 @@ class _SplashPageState extends BasePageState<SplashPage> {
   @override
   void initState() {
     super.initState();
-    var otplessFlutterPlugin = Otpless();
-    otplessFlutterPlugin.initHeadless("TY1MBN9BFM4D9HJOS8M3");
   }
 
   @override
@@ -62,28 +59,4 @@ class _SplashPageState extends BasePageState<SplashPage> {
       ),
     );
   }
-}
-
-Future<void> goToStore() async {
-  await UpdateUtils.goToStore();
-}
-
-void _showForceUpdateDialog(BuildContext context) {
-  showDialog(
-    barrierDismissible: false,
-    context: context,
-    builder: (_) {
-      return FinvuDialog(
-        dismissible: false,
-        textAlign: TextAlign.center,
-        title: AppLocalizations.of(context)!.forceUpdateTitle,
-        subtitle: [
-          TextSpan(text: AppLocalizations.of(context)!.forceUpdateSubtitle),
-        ],
-        buttonText: AppLocalizations.of(context)!.okay,
-        content: Container(),
-        onPressed: goToStore,
-      );
-    },
-  );
 }

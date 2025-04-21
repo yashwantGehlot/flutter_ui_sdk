@@ -123,8 +123,8 @@ class _MobileNumberOTPFormState extends State<MobileNumberOTPForm> {
         },
         child: Text(
           AppLocalizations.of(context)!.resendOtp,
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: FinvuUIManager().uiConfig!.secondaryColor,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: FinvuUIManager().uiConfig!.currentColor,
                 fontWeight: FontWeight.w400,
               ),
         ),
@@ -133,7 +133,7 @@ class _MobileNumberOTPFormState extends State<MobileNumberOTPForm> {
 
     return Row(children: [
       Text(AppLocalizations.of(context)!.resendOtpIn,
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: FinvuUIManager().uiConfig!.primaryColor,
                 fontWeight: FontWeight.w400,
               )),

@@ -71,6 +71,7 @@ class FinvuUIManager {
             builder: (context, snapshot) {
               if (snapshot.connectionState != ConnectionState.done) {
                 return MaterialApp(
+                  debugShowCheckedModeBanner: false,
                   theme: getAppTheme(),
                   home: const Scaffold(
                     body: Center(child: CircularProgressIndicator()),
@@ -88,6 +89,7 @@ class FinvuUIManager {
                         return shouldExit;
                       },
                       child: MaterialApp(
+                        debugShowCheckedModeBanner: false,
                         title: 'Finvu',
                         theme: getAppTheme(),
                         localizationsDelegates: const [

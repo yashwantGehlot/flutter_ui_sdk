@@ -50,49 +50,52 @@ class _LoginPageState extends State<LoginPage> {
         },
       ),
       body: SafeArea(
-        child: FinvuScaffold(
-          child: Padding(
-            padding: const EdgeInsets.only(left: 25, right: 25),
-            child: BlocProvider(
-              create: (_) => LoginBloc()
-                ..add(
-                  InitializeEvent(
-                    mobileNumber: mobileNumber,
-                    aaHandle: aaHandle,
-                    consentHandleId: consentHandleId,
+        child: Column(children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 25, right: 25),
+              child: BlocProvider(
+                create: (_) => LoginBloc()
+                  ..add(
+                    InitializeEvent(
+                      mobileNumber: mobileNumber,
+                      aaHandle: aaHandle,
+                      consentHandleId: consentHandleId,
+                    ),
                   ),
-                ),
-              child: BlocListener<LoginBloc, LoginState>(
-                listener: (context, state) {
-                  if (state.status == LoginStatus.error) {
-                    if (state.error?.code ==
-                        FinvuErrorCode.sslPinningFailureError) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            ErrorUtils.getErrorMessage(
-                              context,
-                              state.error,
+                child: BlocListener<LoginBloc, LoginState>(
+                  listener: (context, state) {
+                    if (state.status == LoginStatus.error) {
+                      if (state.error?.code ==
+                          FinvuErrorCode.sslPinningFailureError) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              ErrorUtils.getErrorMessage(
+                                context,
+                                state.error,
+                              ),
                             ),
                           ),
-                        ),
-                      );
+                        );
+                      }
                     }
-                  }
-                },
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      getForm(),
-                      const Padding(padding: EdgeInsets.only(top: 30)),
-                    ],
+                  },
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        getForm(),
+                        const Padding(padding: EdgeInsets.only(top: 30)),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
           ),
-        ),
+          FinvuFooter(),
+        ]),
       ),
       // bottomNavigationBar: _buildRegistrationButtonWidget(context),
     );
